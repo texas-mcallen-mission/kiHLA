@@ -1,2 +1,2 @@
 # HLA-code
-Glue Layer that goes in between the raw data and Data Studio to do more advanced analysis.
+This is a secondary project built off of the stuff created in [``key-indicator-system``](https://github.com/texas-mcallen-mission/key-indicator-system) that lets us do more advanced analysis in Data Studio.
