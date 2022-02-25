@@ -5,7 +5,7 @@ function loadFBData_() {
     let targetSheetName = "data"
 
     let targetSheet = inSpreadsheet.getSheetByName(targetSheetName)
-
+    //@ts-ignore
     let unparsedData = targetSheet.getDataRange().getValues()
 
     // let pre_header = unparsedData.shift() // this gets rid of an extra row you probably don't want to see that's for backend stuff.
@@ -24,7 +24,8 @@ function removeDupes_(header,data,columnName = "isDuplicate"){
 
   let outData = []
   for(let entry of data){
-    if (!entry[position]){
+      if (!entry[position]) {
+        //@ts-ignore
       outData.push(entry)
       // Logger.log(entry)
     }

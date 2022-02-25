@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     # CHANGE THIS TO REFERENCE THE BRANCH YOU WANT TO PUSH
-    branches: []
+    branches: [main]
   release:
     types: [published]
   # DO NOT TOUCH: this updates the authorization 
