@@ -1,7 +1,7 @@
 {
-    "scriptId": "HLA_SCRIPT_ID",
+    "scriptId": "SCRIPT_ID",
     "rootDir": "./",
     "parentId":[
-        "HLA_PARENT_ID"
+        "PARENT_ID"
     ]
 }

@@ -60,8 +60,8 @@ jobs:
         id: modify-clasp
         run: sed -i "s/SCRIPT_ID/$SCRIPTID/;s/PARENT_ID/$PARENTID/" .clasp.json
         env:
-          SCRIPTID: ${{ secrets.SCRIPT_ID_SECRET_NAME }}
-          PARENTID: ${{ secrets.PARENT_ID_SECRET_NAME }}
+          SCRIPTID: ${{ secrets.HLA_SCRIPT_ID }}
+          PARENTID: ${{ secrets.HLA_PARENT_ID }}
           # 🐧
 
         
