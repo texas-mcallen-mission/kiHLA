@@ -28,4 +28,4 @@ jobs:
       IN_DEPLOYMENT_ID: ${{ secrets.DEPLOYMENT_ID }}
       IN_SCRIPT_ID: ${{ secrets.HLA_SCRIPT_ID }}
       IN_PARENT_ID: ${{ secrets.HLA_PARENT_ID }}
-      IN_CONFIG_DATA: ""
+      IN_CONFIG_DATA: ${{ secrets.HLA_CONFIG }}
