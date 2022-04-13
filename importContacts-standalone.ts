@@ -318,46 +318,52 @@ function emailParser(emailList) {
 }
 // IF THIS GOES GLOBAL, THIS WILL HAVE TO CHANGE!!!
 
-function testLanguageParser() {
-    let testString = "TEST (Spanish) WORDS,TEST ENGLISH WORDS";
-    Logger.log(testString.split(","));
-    Logger.log(languageParser(true, testString));
-}
-
+// function testLanguageParser() {
+//     let testString = "TEST (Spanish) WORDS,TEST ENGLISH WORDS";
+//     Logger.log(testString.split(","));
+//     Logger.log(languageParser(true, testString));
+// }
 function testLanguageParserV2() {
     let testStrings = {
-        English: "Beeville Branch",
-        Spanish: "Brownsville 2nd (Spanish) Ward",
-        "Sign Language":"Rio Grande Valley(Sign Language) Branch",
-    }
-    let successes = 0
-    for (let test of testStrings) {
-        if (languageParser(true, testStrings[test]) == test) {
-            console.info("PASSED FOR ", test)
-            successes += 1
-        } else {
-            console.warn("LANGUAGE PARSER FAILED FOR ",test)
+        "English": "Beeville Branch",
+        "Spanish": "Brownsville 2nd (Spanish) Ward",
+        "Spanish,English": "Edinburg 2nd (Spanish) Ward, Edinburg 3rd Ward",
+        "Sign Language": "Rio Grande Valley(Sign Language) Branch",
+    };
+    let successes = 0;
+    for (let test in testStrings) {
+        let result = languageParser(true, testStrings[test]).languages;
+        if (result == test) {
+            console.info("PASSED FOR ", test);
+            successes += 1;
+        }
+        else {
+            console.warn("LANGUAGE PARSER FAILED FOR ", test, "RESULT: ", result);
         }
     }
-    if (successes = Object.keys(testStrings).length) {
-        console.log("ALL TESTS PASSED FOR LANGUAGEPARSER")
+    if (successes == Object.keys(testStrings).length) {
+        console.log("ALL TESTS PASSED FOR LANGUAGEPARSER");
     }
 }
-
 function languageParser(multipleUnits, unitString) {
-
-
     // the previous version of this was a crime...
     // noteData.UnitString.substring(noteData.UnitString.search(/\(\w*/))
-    
-    let returnData = []
-
-    let splitUnits = unitString.split(",")
-    
+    let DEFAULT_LANGUAGE = "English";
+    let returnData = [];
+    let splitUnits = unitString.split(",");
     for (let unit of splitUnits) {
-        let regexString = new RegExp('\(([^\)]+) \)')
-        let language = unit.search(regexString)
-        console.log(unitString,language)
+        let langString = "";
+        if (!unit.includes("(")) {
+            langString = DEFAULT_LANGUAGE;
+        } else {
+            let regexString = new RegExp('\(([^\)]+) \)');
+            let regexData = unit.match(/\(([^)]+)\)/);
+            let regexMatch = regexData[1];
+            langString = regexMatch;
+            console.log(unitString, langString);
+
+        }
+        if (!returnData.includes(langString)) { returnData.push(langString); }
     }
     return {
         languages: returnData.toString()
