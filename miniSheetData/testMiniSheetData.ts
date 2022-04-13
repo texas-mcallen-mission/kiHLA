@@ -1,4 +1,4 @@
-testTheThings(){
+function testTheThings(){
     let allSheetData = constructSheetData()
 
     let localData = allSheetData.localData

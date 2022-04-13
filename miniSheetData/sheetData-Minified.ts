@@ -1062,11 +1062,11 @@ function constructSheetData(force = false) {
     };
 
     const targetSpreadsheet = {
-        form: INTERNAL_CONFIG.dataFlow.sheetTargets.form,
-        data: INTERNAL_CONFIG.dataFlow.sheetTargets.data,
-        contact: INTERNAL_CONFIG.dataFlow.sheetTargets.contact,
-        debug: INTERNAL_CONFIG.dataFlow.sheetTargets.debug,
-        localData: INTERNAL_CONFIG.dataFlow.sheetTargets.localData,
+        form: CONFIG.dataFlow.sheetTargets.form,
+        data: CONFIG.dataFlow.sheetTargets.data,
+        contact: CONFIG.dataFlow.sheetTargets.contact,
+        debug: CONFIG.dataFlow.sheetTargets.debug,
+        localData: CONFIG.dataFlow.sheetTargets.localData,
         
     }
     
