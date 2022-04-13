@@ -108,7 +108,7 @@ function calculateCombinedName(kiData) {
             if (entry[missProps.name] != "") {
                 let outString = entry[missProps.name] + " (" + entry[missProps.pos] + ") "
                 if (entry[missProps.trainer]) {
-                    outString += "[TRAINER]"
+                    outString += "[TRAINER] "
                 }
                 preOut += outString
             }
