@@ -68,7 +68,7 @@ function calculateRR_(kiData) {
     // creates a key with the name ``rrPercent`` of type float or doesn't create a key if there are no rc's in an area
     
     let output = [];
-    let newKeyName = "truncLang"
+    let newKeyName = "rrPercent"
 
     for (let entry of kiData) {
         
@@ -106,7 +106,10 @@ function calculateCombinedName(kiData) {
         for (let missionary in missionaryKeys) {
             let missProps = missionaryKeys[missionary]
             if (entry[missProps.name] != "") {
-                let outString = entry[missProps.name] + " (" + entry[missProps.position] +") "
+                let outString = entry[missProps.name] + " (" + entry[missProps.pos] + ") "
+                if (entry[missProps.trainer]) {
+                    outString += "[TRAINER]"
+                }
                 preOut += outString
             }
         }
