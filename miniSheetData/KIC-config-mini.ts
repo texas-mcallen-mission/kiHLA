@@ -44,11 +44,11 @@ let INTERNAL_CONFIG = {
         formColumnsToExcludeFromDataSheet: ["responsePulled", "submissionEmail"],
 
         sheetTargets: {
-            form: SpreadsheetApp.openById("SECRETS SHOULD STICK AN ID HERE"),
-            data: SpreadsheetApp.openById("SECRETS SHOULD STICK AN ID HERE"),
-            contact: SpreadsheetApp.getActiveSpreadsheet(),
-            debug: SpreadsheetApp.getActiveSpreadsheet(),
-            localData: SpreadsheetApp.getActiveSpreadsheet()
+            form: "SECRETS SHOULD STICK AN ID HERE",
+            data: "SECRETS SHOULD STICK AN ID HERE",
+            contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            localData: SpreadsheetApp.getActiveSpreadsheet().getId()
             
         },
 

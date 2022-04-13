@@ -1054,7 +1054,6 @@ function constructSheetData(force = false) {
     };
 
     const headerRows = {
-        form: 0,
         contact: 0,
         data: 0,
         debug: 0,
