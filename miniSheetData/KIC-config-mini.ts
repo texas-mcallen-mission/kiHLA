@@ -48,7 +48,8 @@ let INTERNAL_CONFIG = {
             data: "SECRETS SHOULD STICK AN ID HERE",
             contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
             debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            localData: SpreadsheetApp.getActiveSpreadsheet().getId()
+            localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
             
         },
 

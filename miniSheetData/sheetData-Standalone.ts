@@ -1084,7 +1084,19 @@ function constructSheetData(force = false) {
             failures: 15
         },
         tmmReport: {
-            
+            areaName: 0,
+            district: 1,
+            zone: 2,
+            np: 3,
+            sa: 4,
+            bd: 5,
+            bc: 6,
+            rrPercent: 7,
+            serviceHrs: 8,
+            cki: 9,
+            hasVehicle: 10,
+            truncLang: 11,
+            combinedNames: 12,
         }
     };
 
@@ -1095,7 +1107,8 @@ function constructSheetData(force = false) {
         contact: "Contact Data",
         data: "Data",
         debug: "DEBUG SHEET",
-        localData: "Data-TEST"
+        localData: "Data-TEST",
+        tmmReport:"TMM Report Printable"
 
     };
 
@@ -1103,7 +1116,8 @@ function constructSheetData(force = false) {
         contact: 0,
         data: 0,
         debug: 0,
-        localData: 1
+        localData: 1,
+        tmmReport:10,
 
     };
 
@@ -1113,6 +1127,7 @@ function constructSheetData(force = false) {
         contact: CONFIG.dataFlow.sheetTargets.contact,
         debug: CONFIG.dataFlow.sheetTargets.debug,
         localData: CONFIG.dataFlow.sheetTargets.localData,
+        tmmReport: CONFIG.dataFlow.sheetTargets.tmmReport
         
     }
     

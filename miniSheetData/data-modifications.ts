@@ -12,6 +12,22 @@ function testTheThings(){
     localData.setData(deduped);
 }
 
+function updateTMMReport(allSheetData) {
+    let remoteDataSheet = allSheetData.data
+    let remoteData = remoteDataSheet.getData()
+
+    let tmmReport = allSheetData.tmmReport
+
+    let deduped = removeDuplicates(remoteData)
+    let thisWeeksData = getThisWeeksData_(deduped)
+
+    let plusLang = calculateTruncatedLanguage(thisWeeksData)
+    let plusName = calculateCombinedName(plusLang)
+    let plusRR = calculateRR_(plusName)
+
+    tmmReport.setData(plusRR)
+}
+
 
 function removeDuplicates(kiData) {
     let output = []
@@ -23,9 +39,45 @@ function removeDuplicates(kiData) {
     return output
 }
 
+
+function calculateTruncatedLanguage(kiData) {
+    // this attaches a truncated language based on the input it receives.
+    // creates a key with the name ``truncLang`` of type string
+    // data that was parsed with the newer version of languageParser is necessary for ASL areas
+    
+    // used for the printed version of the TMM report to knock down cell width.
+
+    let output = []
+    let newKeyName = "truncLang"
+    let langLookup = {
+        "English": "Eng",
+        "Spanish": "Spa",
+        "Sign Language":"ASL",
+        "English,English": "Eng",
+        "Spanish,Spanish":"Spa"
+    }
+    for (let entry of kiData) {
+        entry[newKeyName] = langLookup[entry.languageString]
+        output.push(entry)
+    }
+    return output
+}
+
 function calculateRR_(kiData) {
     // this calculates retention rate (or leaves it blank, if there are zero recent converts)
-    // creates a key with the name ``rrPercent`` of type float
+    // creates a key with the name ``rrPercent`` of type float or doesn't create a key if there are no rc's in an area
+    
+    let output = [];
+    let newKeyName = "truncLang"
+
+    for (let entry of kiData) {
+        
+        if (entry.rc > 0) {
+            entry[newKeyName]  = entry.rca/entry.rc
+        }
+        output.push(entry)
+    }
+    return output
 }
 function calculateCombinedName(kiData) {
     // this is a bit computationally expensive, you'll probably want to run this *after* you run scoping things
