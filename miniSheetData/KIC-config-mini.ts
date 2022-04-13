@@ -32,7 +32,7 @@ let INTERNAL_CONFIG = {
         maxRowToMarkDuplicates: 500, //If set to -1, the full sheet will be checked (which takes a long time!). If set to 0, duplicates will not be marked.
 
         log_importContacts: false,
-        log_dataMerge: false,
+        log_dataMerge: true,
         log_responsePulled: false,
         log_duplicates: false,
         skipMarkingPulled: false, //Stops marking Form Responses as having been pulled into the data sheet

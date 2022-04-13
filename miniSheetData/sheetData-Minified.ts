@@ -191,14 +191,15 @@ class RawSheetData {
      * @param {number} headerRow - The row index, starting with 0, of the header row.
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
      */
-    constructor(tabName, headerRow, initialKeyToIndex = {},targetSheet) {
+    constructor(tabName, headerRow, initialKeyToIndex = {},targetSheetId) {
         this.tabName = tabName;
         this.headerRow = headerRow;
         this.keyToIndex = initialKeyToIndex;
 
         this.buildIndexToKey_();
         // here's the bit that I need to figure out how to change.
-        this.sheet = targetSheet.getSheetByName(
+        let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId)
+        this.sheet = targetSpreadsheet.getSheetByName(
             this.tabName
         );
         if (this.sheet == null)
@@ -1090,7 +1091,7 @@ function constructSheetData(force = false) {
 
     //    refreshContacts(allSheetData);
 
-    syncDataFlowCols_(allSheetData);
+    // syncDataFlowCols_(allSheetData);
 
     //setSheetsUp_(allSheetData);
 
