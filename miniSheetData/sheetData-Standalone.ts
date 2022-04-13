@@ -604,7 +604,7 @@ class RawSheetData {
     clearContent() {
         let startRow = this.getHeaderRow() + 2;
         let numRows = this.getSheet().getLastRow() + 1 - startRow;
-        if (numRows == 0) return; //End if the sheet is already empty
+        if (numRows <= 0) return; //End if the sheet is already empty
         let numCols = this.getSheet().getLastColumn();
         this.getSheet().getRange(startRow, 1, numRows+1, numCols).clearContent();
     }
@@ -1097,6 +1097,9 @@ function constructSheetData(force = false) {
             hasVehicle: 10,
             truncLang: 11,
             combinedNames: 12,
+        },
+        serviceRep: {
+            
         }
     };
 
@@ -1108,7 +1111,8 @@ function constructSheetData(force = false) {
         data: "Data",
         debug: "DEBUG SHEET",
         localData: "Data-TEST",
-        tmmReport:"TMM Report Printable"
+        tmmReport: "TMM Report Printable",
+
 
     };
 
@@ -1117,7 +1121,8 @@ function constructSheetData(force = false) {
         data: 0,
         debug: 0,
         localData: 1,
-        tmmReport:9,
+        tmmReport: 9,
+        serviceRep: 0,
 
     };
 
@@ -1128,7 +1133,7 @@ function constructSheetData(force = false) {
         debug: CONFIG.dataFlow.sheetTargets.debug,
         localData: CONFIG.dataFlow.sheetTargets.localData,
         tmmReport: CONFIG.dataFlow.sheetTargets.tmmReport,
-        
+        serviceRep: CONFIG.dataFlow.sheetTargets.serviceRep
     }
     
 

@@ -50,7 +50,7 @@ let INTERNAL_CONFIG = {
             debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
             localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
             tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            
+            serviceRep: SpreadsheetApp.getActiveSpreadsheet().getId(),
         },
 
     },
