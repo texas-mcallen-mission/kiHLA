@@ -606,7 +606,7 @@ class RawSheetData {
         let numRows = this.getSheet().getLastRow() + 1 - startRow;
         if (numRows == 0) return; //End if the sheet is already empty
         let numCols = this.getSheet().getLastColumn();
-        this.getSheet().getRange(startRow, 1, numRows, numCols).clearContent();
+        this.getSheet().getRange(startRow, 1, numRows+1, numCols).clearContent();
     }
 
     /**
@@ -1117,7 +1117,7 @@ function constructSheetData(force = false) {
         data: 0,
         debug: 0,
         localData: 1,
-        tmmReport:10,
+        tmmReport:9,
 
     };
 
