@@ -962,6 +962,28 @@ function constructSheetData(force = false) {
             vehicleMiles: 45,
             vinLast8: 46,
             aptAddress: 47,
+
+            "bap-self-ref": 48,
+            "bap-street": 49,
+            "bap-ward-activity-or-event": 50,
+            "bap-ref-recent-convert": 51,
+            "bap-ref-part-member": 52,
+            "bap-ref-other-member": 53,
+            "bap-ref-teaching-pool": 54,
+            "bap-ref-other-non-member": 55,
+            "bap-fb-mission": 56,
+            "bap-fb-personal": 57,
+            "bap-family-history": 58,
+            "bap-taught-prev": 59,
+            "fb-role": 60,
+            "fb-ref-ysa": 61,
+            "fb-ref-asl": 62,
+            "fb-ref-service": 63,
+            "fb-ref-laredo-spa": 64,
+            "fb-ref-laredo-eng": 65,
+            "fb-ref-rgv-spa": 66,
+            "fb-ref-rgv-eng": 67,
+            "fb-ref-corpus": 68,
             // "formNotes": 48,    //form data
             //...additional form data (ex. baptism sources)
         },
@@ -980,6 +1002,7 @@ function constructSheetData(force = false) {
             bc: 10, //form data
             rca: 11, //form data
             rc: 12, //form data
+            cki: 13, //form data
             serviceHrs: 14, //form data
 
             name1: 15,
@@ -992,7 +1015,6 @@ function constructSheetData(force = false) {
             position3: 22,
             isTrainer3: 23, // hello, update!
 
-            cki: 13, //form data
             // super confused
             districtLeader: 24,
             zoneLeader1: 25,
@@ -1021,6 +1043,27 @@ function constructSheetData(force = false) {
             aptAddress: 47,
             // "formNotes": 48,    //form data
             //...additional form data (ex. baptism sources)
+            "bap-self-ref": 48,
+            "bap-street": 49,
+            "bap-ward-activity-or-event": 50,
+            "bap-ref-recent-convert": 51,
+            "bap-ref-part-member": 52,
+            "bap-ref-other-member": 53,
+            "bap-ref-teaching-pool": 54,
+            "bap-ref-other-non-member": 55,
+            "bap-fb-mission": 56,
+            "bap-fb-personal": 57,
+            "bap-family-history": 58,
+            "bap-taught-prev": 59,
+            "fb-role": 60,
+            "fb-ref-ysa": 61,
+            "fb-ref-asl": 62,
+            "fb-ref-service": 63,
+            "fb-ref-laredo-spa": 64,
+            "fb-ref-laredo-eng": 65,
+            "fb-ref-rgv-spa": 66,
+            "fb-ref-rgv-eng": 67,
+            "fb-ref-corpus": 68,
         },
         debug: {
             functionName: 0,
