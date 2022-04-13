@@ -21,7 +21,7 @@ let INTERNAL_CONFIG = {
 
         areaId_cacheKey: "butterflies and clouds", //ID to use when storing areaIDs in the cache
 
-        allSheetData_cacheEnabled: true, //Cache allSheetData, the object returned by constructSheetData()
+        allSheetData_cacheEnabled: false, //Cache allSheetData, the object returned by constructSheetData()
 
         allSheetData_cacheExpirationLimit: 1800, //Maximum time in seconds before the cache gets reset
 
