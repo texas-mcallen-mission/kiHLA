@@ -324,30 +324,31 @@ function testLanguageParser() {
     Logger.log(languageParser(true, testString));
 }
 
+function testLanguageParserV2() {
+    let testStrings = {
+        English: "Beeville Branch",
+        Spanish: "Brownsville 2nd (Spanish) Ward",
+        "Sign Language":"Rio Grande Valley(Sign Language) Branch",
+    }
+    for (let test of testStrings) {
+        languageParser(true, unitString)
+    }
+}
+
 function languageParser(multipleUnits, unitString) {
 
 
+    // the previous version of this was a crime...
     // noteData.UnitString.substring(noteData.UnitString.search(/\(\w*/))
-    let defaultLanguage = "English";
-    let spanishTestString = "Spanish";
-    let spanishOutputString = "Spanish";
-    let returnData = [];
-    if (multipleUnits == false) {
-        if (unitString.includes(spanishTestString) == true) { // this is going to get changed in the future to get rid of the silly spanish,spanish tags.
-            returnData.push(spanishOutputString);
-        } else {
-            returnData.push(defaultLanguage);
-        }
-    } else {
-        let unitStringSplit = unitString.split(",");
+    
+    let returnData = []
 
-        for (let testString of unitStringSplit) {
-            if (testString.includes(spanishTestString) == true) {
-                returnData.push(spanishOutputString);
-            } else {
-                returnData.push(defaultLanguage);
-            }  // 
-        }
+    let splitUnits = unitString.split(",")
+    
+    for (let unit of splitUnits) {
+        let regexString = new RegExp('\(([^\)]+) \)')
+        let language = unit.search(regexString)
+        console.log(unitString,language)
     }
     return {
         languages: returnData.toString()
