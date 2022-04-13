@@ -107,9 +107,9 @@ function calculateCombinedName(kiData) {
             let missProps = missionaryKeys[missionary]
             if (entry[missProps.name] != "") {
                 let outString = entry[missProps.name] + " (" + entry[missProps.pos] + ") "
-                if (entry[missProps.trainer]) {
-                    outString += "[TRAINER] "
-                }
+                // if (entry[missProps.trainer]) {
+                //     outString += "[TRAINER] "
+                // }
                 preOut += outString
             }
         }
