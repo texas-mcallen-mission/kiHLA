@@ -1123,8 +1123,9 @@ function constructSheetData(force = false) {
     for (let sdKey in tabNames) {
         let rawSheetData = new RawSheetData(tabNames[sdKey], headerRows[sdKey], initialColumnOrders[sdKey],targetSpreadsheet[sdKey]);
         let sheetData = new SheetData(rawSheetData);
-
-        populateExtraColumnData_(sheetData);    //Add non-hardcoded key strings
+        // TODO THIS IS CURRENTLY DISABLED
+        // honestly might be *useful* to leave it off, because then I can just leave out things ezpz
+        // populateExtraColumnData_(sheetData);    //Add non-hardcoded key strings
 
         allSheetData[sdKey] = sheetData;
         log += " '" + sheetData.getTabName() + "'";
@@ -1132,9 +1133,10 @@ function constructSheetData(force = false) {
     console.log(log);
 
     //    refreshContacts(allSheetData);
-
+    // TODO THIS IS CURRENTLY DISABLED
     // syncDataFlowCols_(allSheetData);
 
+    // this isn't implemented.
     //setSheetsUp_(allSheetData);
 
     //?   Object.freeze(allSheetData);
