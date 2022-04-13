@@ -330,8 +330,17 @@ function testLanguageParserV2() {
         Spanish: "Brownsville 2nd (Spanish) Ward",
         "Sign Language":"Rio Grande Valley(Sign Language) Branch",
     }
+    let successes = 0
     for (let test of testStrings) {
-        languageParser(true, unitString)
+        if (languageParser(true, testStrings[test]) == test) {
+            console.info("PASSED FOR ", test)
+            successes += 1
+        } else {
+            console.warn("LANGUAGE PARSER FAILED FOR ",test)
+        }
+    }
+    if (successes = Object.keys(testStrings).length) {
+        console.log("ALL TESTS PASSED FOR LANGUAGEPARSER")
     }
 }
 
