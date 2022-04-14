@@ -192,14 +192,17 @@ class RawSheetData {
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
     * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
     */
-    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheetId) {
-        if (typeof targetSheetId == undefined) {
-            targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
-        } else if (isFileAccessible_(targetSheetId)) {
-            console.info("using external sheet id for",tabName)
+    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet) {
+        let targetSheetId = ""
+        console.log(typeof targetSheet)
+        if (isFileAccessible_(targetSheet)) {
+            console.info("using external sheet id for", tabName)
+            targetSheetId = targetSheet
         } else {
-            console.error("specified sheet not available")
-            throw ('sheetData constructor for'+ tabName +' given bad sheet id argument (was '+targetSheetId+')')
+            console.info("Using local sheet")
+            targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId()
+            // console.error("specified sheet not available")
+            // throw ('sheetData constructor for'+ tabName +' given bad sheet id argument (was '+targetSheetId+')')
         }
         
         // this is essentially a be-all, end-all way to make sure that things get pushed to the right places
