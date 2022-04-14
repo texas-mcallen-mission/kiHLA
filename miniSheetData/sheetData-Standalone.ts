@@ -1099,7 +1099,12 @@ function constructSheetData(force = false) {
             combinedNames: 12,
         },
         serviceRep: {
-            
+            areaName: 0,
+            areaID: 1,
+            district: 2,
+            zone: 3,
+            combinedNames: 4,
+            serviceHrs: 5,
         }
     };
 
@@ -1112,6 +1117,7 @@ function constructSheetData(force = false) {
         debug: "DEBUG SHEET",
         localData: "Data-TEST",
         tmmReport: "TMM Report Printable",
+        serviceRep: "Service Rep Data"
 
 
     };

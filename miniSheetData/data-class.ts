@@ -1,3 +1,4 @@
+
 class kiDataClass {
     constructor(kiData) {
         this.data = [];
@@ -8,13 +9,29 @@ class kiDataClass {
         return this.data;
     }
 
-    addShortLang() {
+    removeBeforeDate(date): this {
+        let output = [];
+        let minMillis = date.getTime();
+        for (let entry of this.data) {
+            let kiDate = new Date(entry.kiDate);
+            let kiMilliseconds = kiDate.getTime();
+            if (kiMilliseconds >= minMillis) {
+                output.push(entry);
+
+            }
+        }
+        console.log("in entries:", this.data.length, " out entries:", output.length);
+        this.data = output;
+        return this;
+    }
+    addShortLang(): this {
         // this attaches a truncated language based on the input it receives.
         // creates a key with the name ``truncLang`` of type string
         // data that was parsed with the newer version of languageParser is necessary for ASL areas
 
         // used for the printed version of the TMM report to knock down cell width.
-
+        // if you want to add another language in the future, stick the language 
+        // from importContacts in as the key, and the value for it as whatever you want.
         let output = [];
         let newKeyName = "truncLang";
         let langLookup = {
@@ -32,7 +49,8 @@ class kiDataClass {
         return this;
     }
 
-    removeDuplicates() {
+    removeDuplicates(): this {
+        // removes all entries where isDuplicate = true
         let output = [];
         for (let entry of this.data) {
             if (!entry.isDuplicate) {
@@ -42,7 +60,7 @@ class kiDataClass {
         this.data = output;
         return this;
     }
-    calculateRR() {
+    calculateRR(): this {
         // this calculates retention rate (or leaves it blank, if there are zero recent converts)
         // creates a key with the name ``rrPercent`` of type float or doesn't create a key if there are no rc's in an area
 
@@ -60,7 +78,7 @@ class kiDataClass {
         return this;
     }
 
-    calculateCombinedName() {
+    calculateCombinedName(): this {
         // this is a bit computationally expensive, you'll probably want to run this *after* you run scoping things
         // creates a key with the name ``combinedNames`` of type string
         let output = [];
@@ -100,7 +118,7 @@ class kiDataClass {
         this.data = output;
         return this;
     }
-    getThisWeeksData() {
+    getThisWeeksData(): this {
         let sundayDate = getSundayOfCurrentWeek();
         let minMillis = sundayDate.getTime();
         let output = [];
@@ -117,6 +135,3 @@ class kiDataClass {
         return this;
     }
 }
-
-
-
