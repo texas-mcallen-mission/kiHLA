@@ -44,13 +44,13 @@ let INTERNAL_CONFIG = {
         formColumnsToExcludeFromDataSheet: ["responsePulled", "submissionEmail"],
 
         sheetTargets: {
-            form: "SECRETS SHOULD STICK AN ID HERE",
-            data: "SECRETS SHOULD STICK AN ID HERE",
+            form: "SECRETS SHOULD REPLACE THIS WITH AN ID",
+            data: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
             debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
             localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
             tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            serviceRep: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            serviceRep: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             fbReferrals: SpreadsheetApp.getActiveSpreadsheet().getId(),
         },
 
