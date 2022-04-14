@@ -31,7 +31,7 @@ function updateTechSquadReport() {
 
     let remoteData = remoteDataSheet.getData();
     let kicData = new kiDataClass(remoteData);
-    let techReport = allSheetData.techSquad;
+    let techReport = allSheetData.fbReferrals;
 
 
     let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
