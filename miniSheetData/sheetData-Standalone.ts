@@ -197,17 +197,14 @@ class RawSheetData {
         this.keyToIndex = initialKeyToIndex;
 
         this.buildIndexToKey_();
+        // TODO: Make this guy capable of making sheets if the workbook exists
+        // TODO: This also means making a setHeader function of some sort.
         // here's the bit that I need to figure out how to change.
         let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId)
-        this.sheet = targetSpreadsheet.getSheetByName(
-            this.tabName
-        );
-        if (this.sheet == null)
-            throw (
-                "Couldn't construct SheetData: no sheet found with name '" +
-                this.tabName +
-                "'"
-            );
+        this.sheet = targetSpreadsheet.getSheetByName(this.tabName);
+        if (this.sheet == null) {
+            throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
+        }
     }
 
     //Private class methods
@@ -1148,7 +1145,7 @@ function constructSheetData(force = false) {
         localData: 1,
         tmmReport: 9,
         serviceRep: 0,
-        fbReferrals: 0,
+        fbReferrals: 1,
 
     };
 
