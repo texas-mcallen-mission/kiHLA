@@ -12,7 +12,8 @@ function testTheThings(){
     localData.setData(deduped);
 }
 
-function updateTMMReport(allSheetData = constructSheetData()) {
+function updateTMMReport() {
+    let allSheetData = constructSheetData()
     let remoteDataSheet = allSheetData.data
 
     let remoteData = remoteDataSheet.getData()
@@ -24,7 +25,8 @@ function updateTMMReport(allSheetData = constructSheetData()) {
     tmmReport.setData(tmmReportData)
 }
 
-function updateServiceRepReport(allSheetData = constructSheetData()) {
+function updateServiceRepReport() {
+    let allSheetData = constructSheetData()
     let remoteDataSheet = allSheetData.data;
 
     let remoteData = remoteDataSheet.getData();
