@@ -51,6 +51,7 @@ let INTERNAL_CONFIG = {
             localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
             tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
             serviceRep: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            fbReferrals: SpreadsheetApp.getActiveSpreadsheet().getId(),
         },
 
     },

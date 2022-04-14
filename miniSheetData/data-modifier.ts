@@ -25,6 +25,22 @@ function updateTMMReport() {
     tmmReport.setData(tmmReportData)
 }
 
+function updateTechSquadReport() {
+    let allSheetData = constructSheetData();
+    let remoteDataSheet = allSheetData.data;
+
+    let remoteData = remoteDataSheet.getData();
+    let kicData = new kiDataClass(remoteData);
+    let techReport = allSheetData.techSquad;
+
+
+    let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
+    let refData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().end;
+
+    techReport.setData(refData);
+}
+
+
 function updateServiceRepReport() {
     let allSheetData = constructSheetData()
     let remoteDataSheet = allSheetData.data;

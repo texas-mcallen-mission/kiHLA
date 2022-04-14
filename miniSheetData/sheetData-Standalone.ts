@@ -1105,6 +1105,34 @@ function constructSheetData(force = false) {
             zone: 3,
             combinedNames: 4,
             serviceHrs: 5,
+        },
+        fbReferrals: {
+            areaName: 0,
+            areaID: 1,
+            district: 2,
+            zone: 3,
+            combinedNames: 4,
+            "bap-self-ref": 5,
+            "bap-street": 6,
+            "bap-ward-activity-or-event": 7,
+            "bap-ref-recent-convert": 8,
+            "bap-ref-part-member": 9,
+            "bap-ref-other-member": 10,
+            "bap-ref-teaching-pool": 11,
+            "bap-ref-other-non-member": 12,
+            "bap-fb-mission": 13,
+            "bap-fb-personal": 14,
+            "bap-family-history": 15,
+            "bap-taught-prev": 16,
+            "fb-role": 17,
+            "fb-ref-ysa": 18,
+            "fb-ref-asl": 19,
+            "fb-ref-service": 20,
+            "fb-ref-laredo-spa": 21,
+            "fb-ref-laredo-eng": 22,
+            "fb-ref-rgv-spa": 23,
+            "fb-ref-rgv-eng": 24,
+            "fb-ref-corpus": 25,
         }
     };
 
@@ -1117,7 +1145,8 @@ function constructSheetData(force = false) {
         debug: "DEBUG SHEET",
         localData: "Data-TEST",
         tmmReport: "TMM Report Printable",
-        serviceRep: "Service Rep Data"
+        serviceRep: "Service Rep Data",
+        fbReferrals: "techSquad Data"
 
 
     };
@@ -1129,6 +1158,7 @@ function constructSheetData(force = false) {
         localData: 1,
         tmmReport: 9,
         serviceRep: 0,
+        fbReferrals: 0
 
     };
 
