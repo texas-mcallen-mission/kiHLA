@@ -738,8 +738,13 @@ function cacheAllSheetData(allSheetData) {
 //                populateExtraColumnData()
 //                sheetDataConstructor()
 
-/*
- * @param {any} allSheetData
+/**
+ * Adds any missing keys that exist on form responses to data.
+ * uses hardcoded things for the ones to sync.
+ * For this to be enabled, I *think* the sheets might have to be on the same document (but I'm not sure.)
+ * May need to be replaced or reworked to get this functional on an allsheetData'd
+ * uses allSheetData.form, allSheetData.data
+ * @param {*} allSheetData
  */
 function syncDataFlowCols_(allSheetData) {
     let formSheetData = allSheetData.form;
