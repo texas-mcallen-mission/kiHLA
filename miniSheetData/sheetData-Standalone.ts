@@ -174,24 +174,35 @@ class SheetData {
  */
 class RawSheetData {
     /*
-      Fields
-  
-      tabName: The name of the Sheet this RawSheetData is tied to.
-      nextFreeColumn: The index of the leftmost column with no defined key.
-      sheet: The Sheet object this RawSheetData is tied to.
-      headerRow: The row index of the header row.
-  
-      keyToIndex: An object whose properties are keys (strings) representing what data goes in a column (ex "areaID", "stl2", "np").
-      Its values are the indices (starting with 0) of the column with that data.
-      indexToKey: The reverse of keyToIndex. An array whose value at a given index is the key corresponding to that index.
+        Fields
+
+        tabName: The name of the Sheet this RawSheetData is tied to.
+        nextFreeColumn: The index of the leftmost column with no defined key.
+        sheet: The Sheet object this RawSheetData is tied to.
+        headerRow: The row index of the header row.
+
+        keyToIndex: An object whose properties are keys (strings) representing what data goes in a column (ex "areaID", "stl2", "np").
+        Its values are the indices (starting with 0) of the column with that data.
+        indexToKey: The reverse of keyToIndex. An array whose value at a given index is the key corresponding to that index.
       */
 
     /**
      * @param {string} tabName - The name of the corresponding Sheet.
      * @param {number} headerRow - The row index, starting with 0, of the header row.
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
-     */
-    constructor(tabName, headerRow, initialKeyToIndex = {},targetSheetId) {
+    * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
+    */
+    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheetId) {
+        if (typeof targetSheetId == undefined) {
+            targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
+        } else if (isFileAccessible_(targetSheetId)) {
+            console.info("using external sheet id for",tabName)
+        } else {
+            console.error("specified sheet not available")
+            throw ('sheetData constructor for'+ tabName +' given bad sheet id argument (was '+targetSheetId+')')
+        }
+        
+        // this is essentially a be-all, end-all way to make sure that things get pushed to the right places
         this.tabName = tabName;
         this.headerRow = headerRow;
         this.keyToIndex = initialKeyToIndex;
@@ -200,7 +211,7 @@ class RawSheetData {
         // TODO: Make this guy capable of making sheets if the workbook exists
         // TODO: This also means making a setHeader function of some sort.
         // here's the bit that I need to figure out how to change.
-        let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId)
+        let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId);
         this.sheet = targetSpreadsheet.getSheetByName(this.tabName);
         if (this.sheet == null) {
             throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
@@ -603,7 +614,7 @@ class RawSheetData {
         let numRows = this.getSheet().getLastRow() + 1 - startRow;
         if (numRows <= 0) return; //End if the sheet is already empty
         let numCols = this.getSheet().getLastColumn();
-        this.getSheet().getRange(startRow, 1, numRows+1, numCols).clearContent();
+        this.getSheet().getRange(startRow, 1, numRows + 1, numCols).clearContent();
     }
 
     /**
@@ -1158,8 +1169,8 @@ function constructSheetData(force = false) {
         tmmReport: CONFIG.dataFlow.sheetTargets.tmmReport,
         serviceRep: CONFIG.dataFlow.sheetTargets.serviceRep,
         fbReferrals: CONFIG.dataFlow.sheetTargets.fbReferrals
-    }
-    
+    };
+
 
     //END Static properties and parameters
 
@@ -1168,7 +1179,7 @@ function constructSheetData(force = false) {
     //Define SheetData instances
     let allSheetData = {};
     for (let sdKey in tabNames) {
-        let rawSheetData = new RawSheetData(tabNames[sdKey], headerRows[sdKey], initialColumnOrders[sdKey],targetSpreadsheet[sdKey]);
+        let rawSheetData = new RawSheetData(tabNames[sdKey], headerRows[sdKey], initialColumnOrders[sdKey], targetSpreadsheet[sdKey]);
         let sheetData = new SheetData(rawSheetData);
         // TODO THIS IS CURRENTLY DISABLED
         // honestly might be *useful* to leave it off, because then I can just leave out things ezpz

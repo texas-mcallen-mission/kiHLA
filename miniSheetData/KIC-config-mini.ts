@@ -46,12 +46,12 @@ let INTERNAL_CONFIG = {
         sheetTargets: {
             form: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             data: "SECRETS SHOULD REPLACE THIS WITH AN ID",
-            contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
             serviceRep: "SECRETS SHOULD REPLACE THIS WITH AN ID",
-            fbReferrals: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // fbReferrals: SpreadsheetApp.getActiveSpreadsheet().getId(),
         },
 
     },
