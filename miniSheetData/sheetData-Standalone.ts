@@ -917,7 +917,7 @@ function constructSheetData(force = false) {
             serviceHrs: 12,
             cki: 13,
             // "formNotes": 14,
-            ...additional form data (ex. baptism sources)
+            // ...additional form data (ex. baptism sources)
         },
 
         // CONTACT SHEET COLUMN ORDER
