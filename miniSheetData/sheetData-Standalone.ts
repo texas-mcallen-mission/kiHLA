@@ -201,7 +201,7 @@ class RawSheetData {
         if (isFileAccessible_(targetSheet)) {
             console.info("using external sheet id for", tabName)
             targetSheetId = targetSheet
-        } else if(typeof targetSheet == undefined || targetSheet = ""){
+        } else if(typeof targetSheet == undefined || targetSheet == ""){
             console.info("Using local sheet")
             targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId()
             // console.error("specified sheet not available")
