@@ -220,10 +220,15 @@ class RawSheetData {
         // TODO: Make this guy capable of making sheets if the workbook exists
         // TODO: This also means making a setHeader function of some sort.
         // here's the bit that I need to figure out how to change.
+        console.log(this.indexToKey)
+        console.log("Accessing the spreasheet")
         let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId);
         this.sheet = targetSpreadsheet.getSheetByName(this.tabName);
         if (this.sheet == null) {
-            throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
+            console.warn("Creating Sheet on target spreadsheet!")
+            this.sheet = targetSpreadsheet.insertSheet(this.tabName)
+            this.setHeaders(this.initialKeyToIndex)
+            // throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
         }
     }
 
@@ -449,6 +454,18 @@ class RawSheetData {
             this.getSheet().getLastColumn()
         );
         return range.getValues()[0];
+    }
+
+    setHeaders(data:any[]) {
+        let headerWidth = this.getSheet().getLastColumn()
+        if(data.length > headerWidth){headerWidth = data.length}
+        let range = this.getSheet().getRange(
+            this.headerRow + 1,
+            1,
+            1,
+            headerWidth
+        );
+        range.setValues(data);
     }
 
     /**
