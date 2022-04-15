@@ -734,6 +734,7 @@ function getAllSheetDataFromCache() {
  * @param {*} allSheetData
  */
 function cacheAllSheetData(allSheetData) {
+    // TODO: figure out how to cache remote sheets.
     Logger.log("Caching allSheetData");
     let cache = CacheService.getDocumentCache();
     // former ignore
