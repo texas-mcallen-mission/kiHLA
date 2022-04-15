@@ -195,14 +195,19 @@ class RawSheetData {
     constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet) {
         let targetSheetId = ""
         console.log(typeof targetSheet)
+        // if the target sheet is accessible, set the thing.
+        // if the target sheet is undefined, assume we're going to hit the ActiveSpreadsheet instead
+        // if the target sheet is *not* undefined but is inaccessible, throw an error
         if (isFileAccessible_(targetSheet)) {
             console.info("using external sheet id for", tabName)
             targetSheetId = targetSheet
-        } else {
+        } else if(typeof targetSheet == undefined || targetSheet = ""){
             console.info("Using local sheet")
             targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId()
             // console.error("specified sheet not available")
             // throw ('sheetData constructor for'+ tabName +' given bad sheet id argument (was '+targetSheetId+')')
+        } else {
+            console.error("This is going to break: you gave it a bad argument, boi")
         }
         
         // this is essentially a be-all, end-all way to make sure that things get pushed to the right places
