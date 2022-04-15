@@ -778,11 +778,13 @@ function cacheAllSheetData(allSheetData) {
  * For this to be enabled, I *think* the sheets might have to be on the same document (but I'm not sure.)
  * May need to be replaced or reworked to get this functional on an allsheetData'd
  * uses allSheetData.form, allSheetData.data
- * @param {*} allSheetData
+ * @param form form : sheetData class: the one you want to sync columns from
+ * @param data : sheetData class: the one you want to sync columns to.
  */
-function syncDataFlowCols_(allSheetData) {
-    let formSheetData = allSheetData.form;
-    let dataSheetData = allSheetData.data;
+function syncDataFlowCols_(form:SheetData, data:SheetData) {
+    // this has been updated so that you can use any remote / not remote thing
+    let formSheetData = form;
+    let dataSheetData = data;
 
     let addedKeys = [];
 
@@ -1232,7 +1234,8 @@ function constructSheetData(force = false) {
 
     //    refreshContacts(allSheetData);
     // TODO THIS IS CURRENTLY DISABLED
-    // syncDataFlowCols_(allSheetData);
+    // TESTING WHOOOOOOOOO
+    syncDataFlowCols_(allSheetData.data,allSheetData.form);
 
     // this isn't implemented.
     //setSheetsUp_(allSheetData);
