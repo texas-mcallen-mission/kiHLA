@@ -28,6 +28,25 @@ function testBattery() {
     let endTime = new Date()
     console.log("tests finished, took ",endTime.getTime()-startTime.getTime()," milliseconds")
 }
+
+
+function testNewHeader(){
+    // step one: target the right sheet:
+    let targetSheet: sheetDataEntry = sheetDataConfig.local.headerTest
+    // step two: open the spreadsheet long enough to delete the target.
+
+    let spreadsheet = SpreadsheetApp.openById(targetSheet.sheetId);
+    let sheet = spreadsheet.getSheetByName(headerTest.tabName);
+    if (sheet != null) {
+        spreadsheet.deleteSheet(sheet);
+    }
+
+    // step three: create a rawSheetData class.
+    let rawSheetData = new RawSheetData(targetSheet.tabName, targetSheet.headerRow, targetSheet.initialColumnOrder);
+    let headerTestSheet = new SheetData(rawSheetData);
+    // at this point, it should be done!
+    console.log("go check the header on sheet ",targetSheet.tabName)
+}
 function updateTMMReport() {
     let allSheetData = constructSheetData()
     let remoteDataSheet = allSheetData.data

@@ -467,7 +467,7 @@ class RawSheetData {
         // let headerWidth = this.getSheet().getLastColumn()
         // if(data.length > headerWidth){headerWidth = data.length}
         let range = this.getSheet().getRange(
-            this.headerRow,
+            this.headerRow+1,
             1,
             1,
             data.length

@@ -212,10 +212,19 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
 
             },
         },
+        headerTest : {
+            tabName: "headerTest",
+            headerRow: 1,
+            sheetId: CONFIG.dataFlow.sheetTargets.headerTest,
+            initialColumnOrder: {
+                test1: 0,
+                "thisShouldBeOnTheHeader": 1
+            },
+        }
     },
     remote: {
         serviceRep: {
-            tabName: "",
+            tabName: "serviceRep-data",
             headerRow: 2,
             sheetId: CONFIG.dataFlow.sheetTargets.serviceRep
             initialColumnOrder: {
@@ -369,29 +378,4 @@ function testStringify() {
     let test2 = JSON.stringify(sheetDataConfig.local);
     console.log(test2);
     // I think I can turn this bad boi into a cached sheetData again if I try hard enough
-}
-
-function testNewHeader{
-    let targetSheet = INTERNAL_CONFIG.dataFlow.sheetTargets.headerTest;
-    let tabName = "headerTest";
-    let headerTest = {
-        tabName: "techSquad Data",
-        headerRow: 1,
-        sheetId: CONFIG.dataFlow.sheetTargets.headerTest,
-        initialColumnOrder: {
-            test1: 0,
-            "thisShouldBeOnTheHeader": 1
-        },
-    }
-    // open the spreadsheet long enough to delete the sheet to make sure that things work
-    let spreadsheet = SpreadsheetApp.openById(headerTest.sheetId)
-    let sheet = spreadsheet.getSheetByName(headerTest.tabName)
-    if (sheet != null) {
-        spreadsheet.deleteSheet(sheet)
-    }
-    
-    let rawSheetData = new RawSheetData(headerTest.tabName, headerTest.headerRow, headerTest.initialColumnOrder)
-    let headerTestSheet = new SheetData(rawSheetData)
-    headerTestSheet.setHeaders([["TEST","WORDS"]])
-    console.log(headerTestSheet.initialColumnOrder)
 }
