@@ -47,6 +47,7 @@ let INTERNAL_CONFIG = {
             // these should be specified if you want to hit a thing outside of the local datastore.
             form: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             data: "SECRETS SHOULD REPLACE THIS WITH AN ID",
+            headerTest: SpreadsheetApp.getActiveSpreadsheet().getId()
             // contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
             // debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
             // localData: SpreadsheetApp.getActiveSpreadsheet().getId(),

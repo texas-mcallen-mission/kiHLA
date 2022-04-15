@@ -32,16 +32,16 @@ interface sheetDataEntry {
     headerRow: number,
     sheetId?: string,
     allowWrite?: boolean,
-    
+
 }
 
-interface sheetDataHolder{
-    [index:string]:sheetDataEntry
+interface sheetDataHolder {
+    [index: string]: sheetDataEntry;
 }
 
-interface columnConfig{
+interface columnConfig {
     [index: string]: number,
-    
+
 }
 // {local:sheetDataEntry,remote:sheetDataEntry}
 
@@ -51,7 +51,7 @@ interface columnConfig{
 //     return obj
 // }
 
-let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder } = {
+let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
     local: {
         form: {
             tabName: "Form Responses",
@@ -274,7 +274,7 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder } = {
             tabName: "Data",
             headerRow: 1,
             sheetId: CONFIG.dataFlow.sheetTargets.data,
-            allowWrite:false,
+            allowWrite: false,
             initialColumnOrder: {
                 areaName: 0,
                 log: 1,
@@ -352,7 +352,7 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder } = {
                 "fb-ref-rgv-spa": 66,
                 "fb-ref-rgv-eng": 67,
                 "fb-ref-corpus": 68,
-            
+
             },
         },
     }
@@ -363,10 +363,36 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder } = {
 
 
 function testStringify() {
-    let test = JSON.stringify(sheetDataConfig)
-    console.log(test)
+    let test = JSON.stringify(sheetDataConfig);
+    console.log(test);
 
-    let test2 = JSON.stringify(sheetDataConfig.local)
-    console.log(test2)
+    let test2 = JSON.stringify(sheetDataConfig.local);
+    console.log(test2);
     // I think I can turn this bad boi into a cached sheetData again if I try hard enough
+}
+
+function testNewHeader{
+    let targetSheet = INTERNAL_CONFIG.dataFlow.sheetTargets.headerTest;
+    let tabName = "headerTest";
+    let headerTest = {
+        tabName: "techSquad Data",
+        headerRow: 1,
+        sheetId: CONFIG.dataFlow.sheetTargets.fbReferrals,
+        initialColumnOrder: {
+            test1: 0,
+            "thisShouldBeOnTheHeader": 1
+        },
+    }
+    // open the spreadsheet long enough to delete the sheet to make sure that things work
+    let spreadsheet = SpreadsheetApp.openById(headerTest.sheetId)
+    let sheet = spreadsheet.openByName(headerTest.tabName)
+    if (sheet != null) {
+        spreadsheet.deleteSheet(sheet)
+    }
+    
+    let rawSheetData = new RawSheetData(headerTest.tabName, headerTest.headerRow, headerTest.initialColumnOrder)
+    let headerTest = new SheetData(rawSheetData)
+
+    console.log(headerTest.initialColumnOrder)
+
 }

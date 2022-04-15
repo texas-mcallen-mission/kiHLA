@@ -227,7 +227,7 @@ class RawSheetData {
         if (this.sheet == null) {
             console.warn("Creating Sheet on target spreadsheet!")
             this.sheet = targetSpreadsheet.insertSheet(this.tabName)
-            this.setHeaders(this.initialKeyToIndex)
+            this.setHeaders(this.indexToKey)
             // throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
         }
     }
@@ -456,7 +456,7 @@ class RawSheetData {
         return range.getValues()[0];
     }
 
-    setHeaders(data:any[]) {
+    setHeaders(data) {
         let headerWidth = this.getSheet().getLastColumn()
         if(data.length > headerWidth){headerWidth = data.length}
         let range = this.getSheet().getRange(
