@@ -199,7 +199,7 @@ class RawSheetData {
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
     * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
     */
-    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet) {
+    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet = null) {
         let targetSheetId = "";
         
         // if the target sheet is accessible, set the thing.
@@ -469,8 +469,8 @@ class RawSheetData {
         let range = this.getSheet().getRange(
             this.headerRow+1,
             1,
-            1,
-            data.length
+            data.length,
+            data[0].length
         );
         range.setValues(data);
     }

@@ -30,16 +30,28 @@ function testBattery() {
 }
 
 
-function testNewHeader(){
+function testNewHeader() {
     // step one: target the right sheet:
-    let targetSheet: sheetDataEntry = sheetDataConfig.local.headerTest
+    let targetSheet: sheetDataEntry = sheetDataConfig.local.headerTest;
     // step two: open the spreadsheet long enough to delete the target.
-
-    let spreadsheet = SpreadsheetApp.openById(targetSheet.sheetId);
-    let sheet = spreadsheet.getSheetByName(headerTest.tabName);
+    let targetID = "";
+    if (targetSheet.sheetId == null || targetSheet.sheetId == undefined) {
+        targetID = SpreadsheetApp.getActiveSpreadsheet().getId()
+    } else {
+        targetID = targetSheet.sheetId
+    }
+    let spreadsheet = SpreadsheetApp.openById(targetID);
+    let sheet = spreadsheet.getSheetByName(targetSheet.tabName);
     if (sheet != null) {
         spreadsheet.deleteSheet(sheet);
     }
+    /* this was a really annoying one to track down: essentially because I was deleting the sheet, and spreadsheetApp 
+    hadn't committed the changes to the server yet (because I/O is time-expensive), there were some really weird bugs.
+    EVERY TIME the code ran, I got a ``Service Spreadsheets timed out while accessing document with [ID]`` error.
+
+    Super frustrating, cost me like an entire hour.
+    */
+    SpreadsheetApp.flush()
 
     // step three: create a rawSheetData class.
     let rawSheetData = new RawSheetData(targetSheet.tabName, targetSheet.headerRow, targetSheet.initialColumnOrder);
