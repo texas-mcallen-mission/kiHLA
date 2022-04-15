@@ -198,7 +198,7 @@ class RawSheetData {
         // if the target sheet is accessible, set the thing.
         // if the target sheet is undefined, assume we're going to hit the ActiveSpreadsheet instead
         // if the target sheet is *not* undefined but is inaccessible, throw an error
-        if (typeof targetSheet == undefined || targetSheet == "") {
+        if (typeof targetSheet == undefined || targetSheet == "" || targetSheet == null) { // I *think* I covered my bases here
             console.info("Using local sheet");
             targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
             // console.error("specified sheet not available")
@@ -208,7 +208,7 @@ class RawSheetData {
             console.info("using external sheet id for", tabName);
             targetSheetId = targetSheet;
         } else {
-                console.error("This is going to break: you gave it a bad argument, boi");
+                console.error("This is going to break: failure for ", tabName , " with targetSheet: ", targetSheet);
             }
         }
 
