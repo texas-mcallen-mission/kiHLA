@@ -12,6 +12,22 @@ function testTheThings(){
     localData.setData(deduped);
 }
 
+function testBattery() {
+    let startTime = new Date()
+    console.log("Starting All Tests")
+    let tests = {
+        tmm: updateTMMReport,
+        techSquad: updateTechSquadReport,
+        serviceRep: updateServiceRepReport,
+    }
+    for (let entry of tests) {
+        let test = tests[entry]
+        console.log("beginning test for",entry)
+        test()
+    }
+    let endTime = new Date()
+    console.log("tests finished, took ",endTime.getTime()-startTime.getTime())
+}
 function updateTMMReport() {
     let allSheetData = constructSheetData()
     let remoteDataSheet = allSheetData.data
