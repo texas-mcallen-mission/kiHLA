@@ -391,8 +391,8 @@ function testNewHeader{
     }
     
     let rawSheetData = new RawSheetData(headerTest.tabName, headerTest.headerRow, headerTest.initialColumnOrder)
-    let headerTest = new SheetData(rawSheetData)
+    let headerTestSheet = new SheetData(rawSheetData)
 
-    console.log(headerTest.initialColumnOrder)
+    console.log(headerTestSheet.initialColumnOrder)
 
 }
