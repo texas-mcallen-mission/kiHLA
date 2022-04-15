@@ -464,13 +464,13 @@ class RawSheetData {
     }
 
     setHeaders(data) {
-        let headerWidth = this.getSheet().getLastColumn()
-        if(data.length > headerWidth){headerWidth = data.length}
+        // let headerWidth = this.getSheet().getLastColumn()
+        // if(data.length > headerWidth){headerWidth = data.length}
         let range = this.getSheet().getRange(
-            this.headerRow + 1,
+            this.headerRow,
             1,
             1,
-            headerWidth
+            data.length
         );
         range.setValues(data);
     }
