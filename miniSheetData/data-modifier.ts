@@ -20,13 +20,13 @@ function testBattery() {
         techSquad: updateTechSquadReport,
         serviceRep: updateServiceRepReport,
     }
-    for (let entry of tests) {
+    for (let entry in tests) {
         let test = tests[entry]
         console.log("beginning test for",entry)
         test()
     }
     let endTime = new Date()
-    console.log("tests finished, took ",endTime.getTime()-startTime.getTime())
+    console.log("tests finished, took ",endTime.getTime()-startTime.getTime()," milliseconds")
 }
 function updateTMMReport() {
     let allSheetData = constructSheetData()
