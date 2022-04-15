@@ -46,6 +46,7 @@ class SheetData {
         return this.rsd.getHeaderRow();
     }
 
+
     /**
      * Returns the index for the column with the given key string.
      * @param {string} key
@@ -166,6 +167,12 @@ class SheetData {
     setData(data) {
         this.rsd.setData(data);
     }
+    /**
+     * Returns the index, starting with 0, of the header row of this sheet.
+     */
+    setHeaders(data) {
+        return this.rsd.setHeaders(data);
+    }
 }
 
 /**
@@ -227,7 +234,7 @@ class RawSheetData {
         if (this.sheet == null) {
             console.warn("Creating Sheet on target spreadsheet!")
             this.sheet = targetSpreadsheet.insertSheet(this.tabName)
-            this.setHeaders(this.indexToKey)
+            this.setHeaders([this.indexToKey])
             // throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
         }
     }
