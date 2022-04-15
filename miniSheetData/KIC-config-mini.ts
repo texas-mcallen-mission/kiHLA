@@ -43,7 +43,8 @@ let INTERNAL_CONFIG = {
 
         formColumnsToExcludeFromDataSheet: ["responsePulled", "submissionEmail"],
 
-        sheetTargets: {// these should be specified if you want to hit a thing outside of the local datastore.
+        sheetTargets: {
+            // these should be specified if you want to hit a thing outside of the local datastore.
             form: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             data: "SECRETS SHOULD REPLACE THIS WITH AN ID",
             // contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
