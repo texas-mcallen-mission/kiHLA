@@ -377,7 +377,7 @@ function testNewHeader{
     let headerTest = {
         tabName: "techSquad Data",
         headerRow: 1,
-        sheetId: CONFIG.dataFlow.sheetTargets.fbReferrals,
+        sheetId: CONFIG.dataFlow.sheetTargets.headerTest,
         initialColumnOrder: {
             test1: 0,
             "thisShouldBeOnTheHeader": 1
@@ -385,14 +385,13 @@ function testNewHeader{
     }
     // open the spreadsheet long enough to delete the sheet to make sure that things work
     let spreadsheet = SpreadsheetApp.openById(headerTest.sheetId)
-    let sheet = spreadsheet.openByName(headerTest.tabName)
+    let sheet = spreadsheet.getSheetByName(headerTest.tabName)
     if (sheet != null) {
         spreadsheet.deleteSheet(sheet)
     }
     
     let rawSheetData = new RawSheetData(headerTest.tabName, headerTest.headerRow, headerTest.initialColumnOrder)
     let headerTestSheet = new SheetData(rawSheetData)
-
+    headerTestSheet.setHeaders([["TEST","WORDS"]])
     console.log(headerTestSheet.initialColumnOrder)
-
 }
