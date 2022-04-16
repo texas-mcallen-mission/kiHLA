@@ -71,9 +71,10 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
         let rawSheetData = new RawSheetData(entry.tabName, entry.headerRow, entry.initialColumnOrder, targetSheet)
         let sheetData = new SheetData(rawSheetData)
         keys.push(key)
+        allSheetData[key] = sheetData
     }
     // dunno if this will work or not yet, but we'll see!
-    syncDataFlowCols_(allSheetData.form, allSheetData.data)
+    // syncDataFlowCols_(allSheetData.form, allSheetData.data)
 
     return allSheetData;
 }
@@ -107,7 +108,7 @@ interface columnConfig {
 let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
     local: {
         form: {
-            tabName: "Form Responses",
+            tabName: "Form Responses-SyncTest",
             headerRow: 0,
             initialColumnOrder: {
                 areaName: 0,
@@ -127,7 +128,7 @@ let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries
             },
         },
         data: {
-            tabName: "Data",
+            tabName: "Data-SyncTest",
             headerRow: 0,
             initialColumnOrder: {
                 areaName: 0,

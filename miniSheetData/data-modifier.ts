@@ -19,6 +19,7 @@ function testBattery() {
         tmm: updateTMMReport,
         techSquad: updateTechSquadReport,
         serviceRep: updateServiceRepReport,
+        newHeader: testNewHeader,
     }
     for (let entry in tests) {
         let test = tests[entry]
@@ -29,6 +30,15 @@ function testBattery() {
     console.log("tests finished, took ",endTime.getTime()-startTime.getTime()," milliseconds")
 }
 
+function testSyncDataFlowCols() {
+    let allSheetData2 = constructSheetDataV2(sheetDataConfig.local)
+    syncDataFlowCols_(allSheetData2.form, allSheetData2.data)
+    
+    let kiData = allSheetData2.form.getData()
+    console.log("testing adding new keys")
+    allSheetData2.data.insertData(kiData)
+    console.log("GO check the datasheet")
+}
 
 function testNewHeader() {
     // step one: target the right sheet:
