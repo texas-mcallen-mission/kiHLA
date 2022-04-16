@@ -781,10 +781,10 @@ function cacheAllSheetData(allSheetData) {
  * @param form form : sheetData class: the one you want to sync columns from
  * @param data : sheetData class: the one you want to sync columns to.
  */
-function syncDataFlowCols_(form:SheetData, data:SheetData) {
+function syncDataFlowCols_(allSheetData:manySheetDatas) {
     // this has been updated so that you can use any remote / not remote thing
-    let formSheetData = form;
-    let dataSheetData = data;
+    let formSheetData = allSheetData.form;
+    let dataSheetData = allSheetData.data;
 
     let addedKeys = [];
 
