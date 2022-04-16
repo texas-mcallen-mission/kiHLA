@@ -26,6 +26,59 @@
 
 */
 
+function testStringify() {
+    let test = JSON.stringify(sheetDataConfig);
+    console.log(test);
+
+    let test2 = JSON.stringify(sheetDataConfig.local);
+    console.log(test2);
+
+    let allSheetDataLocal = constructSheetDataV2(sheetDataConfig.local)
+    let allSheetDataRemote = constructSheetDataV2(sheetDataConfig.remote)
+    // I think I can turn this bad boi into a cached sheetData again if I try hard enough
+
+    let testingSheet = SpreadsheetApp.getActiveSpreadsheet()
+
+    let jsonTestSheet = testingSheet.getSheetByName("JSON-testing")
+
+    if (jsonTestSheet != null) {
+        let localRange = jsonTestSheet.getRange(1, 1);
+        localRange.setValue(JSON.stringify(allSheetDataLocal))
+        let remoteRange = jsonTestSheet.getRange(2, 1)
+        remoteRange.setValue(JSON.stringify(allSheetDataRemote))
+    }
+}
+
+interface manySheetDatas {
+    [index: string]: SheetData,
+}
+
+/**
+ * constructSheetDataV2: creates an allSheetData type object, which should *ideally* be able to run from cache on remote targets as well!
+ *
+ * @param {manySheetDataEntries} target
+ * @return {*}  {manySheetDatas}
+ */
+function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
+    let allSheetData: manySheetDatas = {};
+    let keys:string[] = ["Constructed SheetData objects for:"]
+    for (let key in target) {
+        let entry = target[key]
+        let targetSheet:string|null = null
+        if (entry.sheetId != undefined && entry.sheetId != null && entry.sheetId != "") {
+            targetSheet = entry.sheetId
+        }
+        let rawSheetData = new RawSheetData(entry.tabName, entry.headerRow, entry.initialColumnOrder, targetSheet)
+        let sheetData = new SheetData(rawSheetData)
+        keys.push(key)
+    }
+    // dunno if this will work or not yet, but we'll see!
+    syncDataFlowCols_(allSheetData.form, allSheetData.data)
+
+    return allSheetData;
+}
+
+
 interface sheetDataEntry {
     initialColumnOrder: columnConfig,
     tabName: string,
@@ -35,7 +88,7 @@ interface sheetDataEntry {
 
 }
 
-interface sheetDataHolder {
+interface manySheetDataEntries {
     [index: string]: sheetDataEntry;
 }
 
@@ -51,7 +104,7 @@ interface columnConfig {
 //     return obj
 // }
 
-let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
+let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
     local: {
         form: {
             tabName: "Form Responses",
@@ -273,7 +326,7 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
                 "bap-taught-prev": 59,
                 "fb-role": 60,
                 "fb-ref-ysa": 61,
-                
+
                 district: 37,
                 zone: 38,
                 unitString: 39,
@@ -300,7 +353,7 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
         serviceRep: {
             tabName: "serviceRep-data",
             headerRow: 2,
-            sheetId: CONFIG.dataFlow.sheetTargets.serviceRep
+            sheetId: CONFIG.dataFlow.sheetTargets.serviceRep,
             initialColumnOrder: {
                 areaName: 0,
                 areaID: 1,
@@ -314,7 +367,7 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
         tmmReport: {
             tabName: "TMM Report Printable",
             headerRow: 9,
-            sheetId: CONFIG.dataFlow.sheetTargets.tmmReport
+            sheetId: CONFIG.dataFlow.sheetTargets.tmmReport,
             initialColumnOrder: {
                 areaName: 0,
                 district: 1,
@@ -445,11 +498,3 @@ let sheetDataConfig: { local: sheetDataHolder, remote: sheetDataHolder; } = {
 };
 
 
-function testStringify() {
-    let test = JSON.stringify(sheetDataConfig);
-    console.log(test);
-
-    let test2 = JSON.stringify(sheetDataConfig.local);
-    console.log(test2);
-    // I think I can turn this bad boi into a cached sheetData again if I try hard enough
-}

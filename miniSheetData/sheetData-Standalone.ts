@@ -199,7 +199,7 @@ class RawSheetData {
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
     * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
     */
-    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet = null) {
+    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet: string|null = null) {
         let targetSheetId = "";
         
         // if the target sheet is accessible, set the thing.
@@ -1194,7 +1194,7 @@ function constructSheetData(force = false) {
         contact: 0,
         data: 0,
         debug: 0,
-        form:0
+        form:0,
         localData: 1,
         tmmReport: 9,
         serviceRep: 2,
@@ -1233,10 +1233,11 @@ function constructSheetData(force = false) {
     console.log(log);
 
     //    refreshContacts(allSheetData);
-    // TODO THIS IS CURRENTLY DISABLED
+    // TODO TEST
+    // // TODO THIS IS CURRENTLY DISABLED
     // TESTING WHOOOOOOOOO
     syncDataFlowCols_(allSheetData.data,allSheetData.form);
-
+    // I can't actually test this on here, I'll have to wait until I get this class pushed to a BERT-INSTANCE
     // this isn't implemented.
     //setSheetsUp_(allSheetData);
 
