@@ -125,6 +125,27 @@ let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries
                 rc: 11,
                 serviceHrs: 12,
                 cki: 13,
+                "bap-self-ref": 14,
+                "bap-street": 15,
+                "bap-ward-activity-or-event": 16,
+                "bap-ref-recent-convert": 17,
+                "bap-ref-part-member": 18,
+                "bap-ref-other-member": 19,
+                "bap-ref-teaching-pool": 20,
+                "bap-ref-other-non-member": 21,
+                "bap-fb-mission": 22,
+                "bap-fb-personal": 23,
+                "bap-family-history": 24,
+                "bap-taught-prev": 25,
+                "fb-role": 26,
+                "fb-ref-ysa": 27,
+                "fb-ref-asl": 28,
+                "fb-ref-service": 29,
+                "fb-ref-laredo-spa": 30,
+                "fb-ref-laredo-eng": 31,
+                "fb-ref-rgv-spa": 32,
+                "fb-ref-rgv-eng": 33,
+                "fb-ref-corpus": 34,
             },
         },
         data: {
@@ -145,6 +166,7 @@ let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries
                 bc: 10, //form data
                 rca: 11, //form data
                 rc: 12, //form data
+                cki: 13, //form data
                 serviceHrs: 14, //form data
 
                 name1: 15,
@@ -157,7 +179,6 @@ let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries
                 position3: 22,
                 isTrainer3: 23, // hello, update!
 
-                cki: 13, //form data
                 // super confused
                 districtLeader: 24,
                 zoneLeader1: 25,
