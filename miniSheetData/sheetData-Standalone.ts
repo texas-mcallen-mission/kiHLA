@@ -26,6 +26,21 @@ class SheetData {
     }
 
     /**
+     *  Expects a single data entry, and send it to the bottom of the target sheet.
+     *  Useful in cases where you don't care as much about the order of entries as you do them not colliding with each other...
+     *
+     * @param {*} data
+     * @param {*} {}
+     * @return {*} 
+     * @memberof SheetData
+     */
+    appendData(data: {}) {
+        return this.rsd.appendDataRow(data);
+    }
+    directEdit(xOffset: number, yOffset: number, valueArray: any[][], writeInDataArea = false) {
+        return this.rsd.directEditRawSheetValues(xOffset, yOffset, valueArray, writeInDataArea);
+    }
+    /**
      * Returns the Sheet object for this SheetData.
      */
     getSheet() {
@@ -197,11 +212,11 @@ class RawSheetData {
      * @param {string} tabName - The name of the corresponding Sheet.
      * @param {number} headerRow - The row index, starting with 0, of the header row.
      * @param {any} initialKeyToIndex - An object containing data about which columns contain hardcoded keys. Formatted as {keyStr: columnIndex ...} where keyStr is a key string and colIndex is the index (starting with 0) of the column to contain that key.
-    * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
+     * @param {string} targetSheetId - sheet id, for connecting to external sheets.  If left empty, will default to the one returned by SpreadsheetApp.getActiveSpreadsheet() 
     */
-    constructor(tabName, headerRow, initialKeyToIndex = {}, targetSheet: string|null = null) {
+    constructor(tabName: string, headerRow: number, initialKeyToIndex: columnConfig, includeSoftcodedColumns: boolean, targetSheet: string | null = null, allowWrite: boolean = true) {
         let targetSheetId = "";
-        
+
         // if the target sheet is accessible, set the thing.
         // if the target sheet is undefined, assume we're going to hit the ActiveSpreadsheet instead
         // if the target sheet is *not* undefined but is inaccessible, throw an error
@@ -210,11 +225,11 @@ class RawSheetData {
             targetSheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
 
         } else {
-        if (isFileAccessible_(targetSheet)) {
-            console.info("using external sheet id for", tabName);
-            targetSheetId = targetSheet;
-        } else {
-                console.error("This is going to break: sheet declaration failure for ", tabName , " with targetSheet: ", targetSheet);
+            if (isFileAccessible_(targetSheet)) {
+                console.info("using external sheet id for", tabName);
+                targetSheetId = targetSheet;
+            } else {
+                console.error("This is going to break: sheet declaration failure for ", tabName, " with targetSheet: ", targetSheet);
             }
         }
 
@@ -222,24 +237,66 @@ class RawSheetData {
         this.tabName = tabName;
         this.headerRow = headerRow;
         this.keyToIndex = initialKeyToIndex;
+        this.sheetId = targetSheetId;
+        this.includeSoftcodedColumns = includeSoftcodedColumns;
+        this.allowWrite = allowWrite;
 
         this.buildIndexToKey_();
         // TODO: Make this guy capable of making sheets if the workbook exists
         // TODO: This also means making a setHeader function of some sort.
         // here's the bit that I need to figure out how to change.
-        console.log(this.indexToKey)
-        console.log("Accessing the spreasheet")
+        // console.log(this.indexToKey)
+        // console.log("Accessing the spreasheet")
         let targetSpreadsheet = SpreadsheetApp.openById(targetSheetId);
         this.sheet = targetSpreadsheet.getSheetByName(this.tabName);
         if (this.sheet == null) {
-            console.warn("Creating Sheet on target spreadsheet!")
-            this.sheet = targetSpreadsheet.insertSheet(this.tabName)
-            this.setHeaders([this.indexToKey])
+            console.warn("Creating Sheet on target spreadsheet!");
+            SpreadsheetApp.flush(); // Because otherwise, we have problems
+            this.sheet = targetSpreadsheet.insertSheet(this.tabName);
+            // SpreadsheetApp.flush(); // This is also ***DUMB*** but I think it's necessary to avoid crashes.
+            // to avoid these flushes causing you issues, make sure that your tabs already exist.
+            // it appears that the second flush is not necessary to ensure stability, but if it becomes a problem, that's probably it.
+            this.setHeaders([this.indexToKey]);
             // throw ("Couldn't construct SheetData: no sheet found with name '" + this.tabName + "'");
+        }
+
+        if (includeSoftcodedColumns == true) {
+            this.addSoftColumns();
         }
     }
 
+
     //Private class methods
+
+
+    /**
+     *  !!WARNING!!
+     * This is a direct call to RawSheetData - wrap it in a SheetData instance before using it!
+     *  Directly puts an array of values like so: [[val1,val2,...,valN],...[arrayn]] in a sheet.
+     *  Checks to make sure that you're not going to overwrite data first, but also enables an override for that if you so desire.
+     *
+     * @param {number} xOffset - how far away from column A you want your things to be
+     * @param {number} yOffset - how far away from row 1 you want your data to be.
+     * @param {[][]} data
+     * @param {boolean} [writeInDataArea=false]
+     * @memberof RawSheetData
+     */
+    directEditRawSheetValues(xOffset: number, yOffset: number, valueArray: any[][], writeInDataArea = false) {
+        if (yOffset + valueArray.length > this.getHeaderRow() && !writeInDataArea) {
+            console.warn("Tried to write to protected row in sheet" + this.getTabName());
+        } else {
+            if (writeInDataArea) { console.warn("ignoring data protections"); }
+            let range = this.getSheet().getRange(1 + xOffset, 1 + yOffset, valueArray.length, valueArray[0].length);
+            range.setValues(valueArray);
+        }
+
+
+    }
+
+
+
+
+
 
     /*
      * Build indexToKey, the complement of keyToIndex.
@@ -453,7 +510,9 @@ class RawSheetData {
      * Returns the header row of this sheet.
      * @returns {string[]} The header row if this sheet.
      */
-    getHeaders() {
+    getHeaders(): string[] {
+        // TODO: This might be a bad idea of a patch
+        if (this.getSheet().getLastColumn() <= 0) return [];
         let range = this.getSheet().getRange(
             this.headerRow + 1,
             1,
@@ -464,10 +523,14 @@ class RawSheetData {
     }
 
     setHeaders(data) {
+        if (this.allowWrite == false) {
+            console.warn("tried to write to read-only sheet");
+            return;
+        }
         // let headerWidth = this.getSheet().getLastColumn()
         // if(data.length > headerWidth){headerWidth = data.length}
         let range = this.getSheet().getRange(
-            this.headerRow+1,
+            this.headerRow + 1,
             1,
             data.length,
             data[0].length
@@ -522,6 +585,10 @@ class RawSheetData {
      * @param {any[][]} values The values to insert.
      */
     setValues(values) {
+        if (this.allowWrite == false) {
+            console.warn("tried to write to read-only sheet");
+            return;
+        }
         if (values.length == 0) return;
         this.clearContent();
         let range = this.getSheet().getRange(
@@ -541,6 +608,10 @@ class RawSheetData {
      * @param {Object} data The data to insert.
      */
     setData(data) {
+        if (this.allowWrite == false) {
+            console.warn("tried to write to read-only sheet");
+            return;
+        }
         if (data.length == 0) return;
 
         let values = [];
@@ -564,16 +635,68 @@ class RawSheetData {
         for (let arr of values)
             if (typeof arr[maxIndex] == "undefined") arr[maxIndex] = "";
 
-        for (let key of skippedKeys)
-            Logger.log(
-                "Skipped key ${key} while pushing to sheet " +
-                this.tabName +
-                ". Sheet doesn't have that key"
-            );
+        // for (let key of skippedKeys)
+        //     Logger.log(
+        //         "Skipped key ${key} while pushing to sheet " +
+        //         this.tabName +
+        //         ". Sheet doesn't have that key"
+        //     );
+
+        if (Object.keys(skippedKeys).length > 0) {
+            console.log("Skipped Keys:", skippedKeys, " while pushing to sheet", this.getTabName());
+        }
 
         this.setValues(values);
     }
 
+    /**
+     *  Takes in a single data entry and puts it at the bottom of a spreadsheet.
+     *  Expects a single line of data.
+     *
+     * @param {*} data
+     * @return {*} 
+     * @memberof RawSheetData
+     */
+    appendDataRow(data) {
+        // if (data.length == 0) return;
+
+        let values = [];
+        let skippedKeys = new Set();
+        let maxIndex = 0;
+
+        // for (let rowData of data) {
+        let arr = [];
+        for (let key in data) {
+            if (!this.hasKey(key)) {
+                skippedKeys.add(key);
+            } else {
+                arr[this.getIndex(key)] = data[key];
+                maxIndex = Math.max(maxIndex, this.getIndex(key));
+            }
+        }
+        values.push(arr);
+        // }
+
+
+        // if (Object.keys(skippedKeys).length > 0) {
+        //     console.info("Skipped keys on", this.getTabName(), ":", skippedKeys);
+        // }
+
+
+        this.appendRowValues(arr);
+    }
+
+    /**
+     * !!WARNING!!
+     * This is a direct call to RawSheetData - wrap it in a SheetData instance before using it!
+     *
+     * Inserts rows of data into the Sheet. Takes an array of objects.
+     * @param {Object[]} values The values to insert.
+     */
+    appendRowValues(values: any[]) {
+        this.getSheet().appendRow(values);
+        // range.setValues(values);
+    }
     /**
      * !!WARNING!!
      * This is a direct call to RawSheetData - wrap it in a SheetData instance before using it!
@@ -623,15 +746,19 @@ class RawSheetData {
         //Force all rows to be of the same length
         for (let arr of values)
             if (typeof arr[maxIndex] == "undefined") arr[maxIndex] = "";
+        // NOTE: this was getting a little verbose...
+        // for (let key of skippedKeys)
+        // Logger.log(
+        //     "Skipped key " +
+        //     key +
+        //     " while pushing to sheet " +
+        //     this.tabName +
+        //     ". Sheet doesn't have that key"
+        // );
+        if (Object.keys(skippedKeys).length > 0) {
+            console.info("Skipped keys on", this.getTabName(), ":", skippedKeys);
+        }
 
-        for (let key of skippedKeys)
-            Logger.log(
-                "Skipped key " +
-                key +
-                " while pushing to sheet " +
-                this.tabName +
-                ". Sheet doesn't have that key"
-            );
 
         this.insertValues(values);
     }
@@ -698,12 +825,44 @@ class RawSheetData {
 
         return arr;
     }
+    /**
+ * !!WARNING!!
+ * This is a direct call to RawSheetData - wrap it in a SheetData instance before using it!
+ *
+ * includes softcoded columns (IE ones not directly defined.)
+ * This has a bit of danger with remote sheets:
+ * 1. If this runs on a remote sheet that somebody has edit access to the header of, 
+ * 2. A valid key gets set in the header, 
+ * 3. You don't explicitly remove particular keys, you could potentially leak PII.
+ * 
+ * BE VERY CAREFUL about using softcoded columns on remote sheets. 
+ */
+    addSoftColumns() {
+        let currentHeader = this.getHeaders();
+        let currentKeys: string[] = this.getKeys();
+
+        let addedFormKeys: string[] = [];
+        if (currentHeader.length > currentKeys.length) {
+            console.warn("Not all columns are hardcoded");
+            let notInKeys = currentHeader.slice(currentKeys.length);
+            Logger.log(notInKeys);
+            for (let noKey of notInKeys) {
+                if (noKey != null && noKey != "" && !CONFIG.dataFlow.formColumnsToExcludeFromDataSheet.includes(noKey) && !this.hasKey(noKey)) {
+                    this.addColumnWithHeader_(noKey, noKey);
+                    addedFormKeys.push(noKey);
+                    // console.log("key", noKey);
+                }
+            }
+            // Logger.log(addedFormKeys);
+        }
+        console.log("added keys to form", this.tabName, ": ", addedFormKeys.toString());
+    }
 }
 
 /**
  * Gets the allSheetData object from the cache and returns it. Must have been cached using cacheAllSheetData(). Returns null if nothing is found in the cache.
  */
-function getAllSheetDataFromCache() {
+function getAllSheetDataFromCache(): manySheetDatas | null {
     let cache = CacheService.getDocumentCache();
     let allSheetData_JSONString = cache.get(
         CONFIG.dataFlow.allSheetData_cacheKey
@@ -726,11 +885,16 @@ function getAllSheetDataFromCache() {
         let sheetDataLiteral = allSheetData_fromCache[sdKey];
         //Extract literal RawSheetData from literal SheetData
         let rawSheetDataLiteral = sheetDataLiteral.rsd;
+        // EASILYIDENTIFIABLESTRINGTOHUNTDOWN
+        console.log(rawSheetDataLiteral);
         //Turn literal RawSheetData into a real RawSheetData
         let rawSheetData = new RawSheetData(
             rawSheetDataLiteral.tabName,
             rawSheetDataLiteral.headerRow,
-            rawSheetDataLiteral.keyToIndex
+            rawSheetDataLiteral.keyToIndex,
+            rawSheetDataLiteral.includeSoftcodedColumns,
+            rawSheetDataLiteral.sheetId,
+            rawSheetDataLiteral.allowWrite,
         );
         //Re-wrap real RawSheetData in a real SheetData
         let sheetData = new SheetData(rawSheetData);
@@ -768,6 +932,7 @@ function cacheAllSheetData(allSheetData) {
     );
 }
 
+
 //                The following are basically RawSheetData methods - they form an external constructor, treating RawSheetData like an Enum. They're only separate from the class because static variables don't work properly in Apps Script.
 //                populateExtraColumnData()
 //                sheetDataConstructor()
@@ -778,39 +943,44 @@ function cacheAllSheetData(allSheetData) {
  * For this to be enabled, I *think* the sheets might have to be on the same document (but I'm not sure.)
  * May need to be replaced or reworked to get this functional on an allsheetData'd
  * uses allSheetData.form, allSheetData.data
+ * If you want to have softcoded columns, you need to enable them in the config.
  * @param form form : sheetData class: the one you want to sync columns from
  * @param data : sheetData class: the one you want to sync columns to.
  */
-function syncDataFlowCols_(allSheetData:manySheetDatas) {
+function syncDataFlowCols_(form: SheetData, data: SheetData) {
     // this has been updated so that you can use any remote / not remote thing
-    let formSheetData = allSheetData.form;
-    let dataSheetData = allSheetData.data;
+    // let formSheetData = allSheetData.form;
+    // let dataSheetData = allSheetData.data;
+
+
 
     let addedKeys = [];
 
-    for (let key of formSheetData.getKeys()) {
+
+    for (let key of form.getKeys()) {
         if (
             !CONFIG.dataFlow.formColumnsToExcludeFromDataSheet.includes(key) &&
-            !dataSheetData.hasKey(key)
+            !data.hasKey(key)
         ) {
-            let header = formSheetData.getHeaders()[formSheetData.getIndex(key)];
-            dataSheetData.rsd.addColumnWithHeader_(key, header);
+            let header = form.getHeaders()[form.getIndex(key)];
+            data.rsd.addColumnWithHeader_(key, header);
             addedKeys.push(key);
         }
     }
 
     let addedStr =
         addedKeys.length == 0
-            ? "No new columns in " + formSheetData.getTabName()
+            ? "No new columns in " + form.getTabName()
             : addedKeys.toString();
     console.log(
         "Added " +
         addedKeys.length +
         " column(s) to " +
-        dataSheetData.getTabName() +
+        data.getTabName() +
         ": " +
         addedStr
     );
+    console.log(data.getKeys().toString());
 }
 
 /*
@@ -859,415 +1029,77 @@ function buildIndexToKey_(allSheetData) {
  * WIP - nonfunctional
  * @param {SheetData} sheetData
  */
-function setSheetUp_(sheetData) {
-    throw "UNIMPLEMENTED";
-    // former ignore
-    // former ignore
-    let sheetName = sheetData.getTabName();
-    let headers = sheetData.getHeaders();
+// function setSheetUp_(sheetData) {
+//     throw "UNIMPLEMENTED";
+//     // former ignore
+//     // former ignore
+//     let sheetName = sheetData.getTabName();
+//     let headers = sheetData.getHeaders();
 
-    let ss = SpreadsheetApp.getActiveSpreadsheet();
-    // former ignore
-    // former ignore
-    let ui = SpreadsheetApp.getUi();
+//     let ss = SpreadsheetApp.getActiveSpreadsheet();
+//     // former ignore
+//     // former ignore
+//     let ui = SpreadsheetApp.getUi();
 
-    // Checks to see if the sheet exists or not.
-    let sheet = ss.getSheetByName(sheetName);
-    if (!sheet) {
-        Logger.log("Sheet '" + sheetName + "' not found. Creating");
-        sheet = ss.insertSheet(sheetName);
-        // former ignore
-        sheet.appendRow(headers); // Creating Header
-    }
+//     // Checks to see if the sheet exists or not.
+//     let sheet = ss.getSheetByName(sheetName);
+//     if (!sheet) {
+//         Logger.log("Sheet '" + sheetName + "' not found. Creating");
+//         sheet = ss.insertSheet(sheetName);
+//         // former ignore
+//         sheet.appendRow(headers); // Creating Header
+//     }
 
-    return sheet;
-}
+//     return sheet;
+// }
 
-/**
- * Get all defined instances of SheetData.
- *
- * SheetData is basically a better version of Sheet. It provides greater access to the data in a sheet than the Sheet class does, given certain assumptions about the format of that Sheet. Functions in the Sheet class usually organize data by row, then by column index number; most SheetData functions organize data by row, then by column header string (or hardcoded key string). This preserves structure when reordering columns or moving data between Sheets as long as corresponding columns have identical headers.
- * @see SheetData
- * @readonly
- * @enum {SheetData}
- * @param {Boolean} force - If true, skips checking the cache and forces a recalculation. Default value is false.
- */
+// /**
+//  * Get all defined instances of SheetData.
+//  *
+//  * SheetData is basically a better version of Sheet. It provides greater access to the data in a sheet than the Sheet class does, given certain assumptions about the format of that Sheet. Functions in the Sheet class usually organize data by row, then by column index number; most SheetData functions organize data by row, then by column header string (or hardcoded key string). This preserves structure when reordering columns or moving data between Sheets as long as corresponding columns have identical headers.
+//  * @see SheetData
+//  * @readonly
+//  * @enum {SheetData}
+//  * @param {Boolean} force - If true, skips checking the cache and forces a recalculation. Default value is false.
+//  */
 function constructSheetData(force = false) {
-
-
-    //Check the cache for allSheetData
     if (CONFIG.dataFlow.allSheetData_cacheEnabled && !force) {
         let allSheetData = getAllSheetDataFromCache();
         if (allSheetData != null) return allSheetData;
     }
-
-
-
-    /*    Static properties and parameters     */
-
-
-    const initialColumnOrders = {
-
-
-        //FORM RESPONSE COLUMN ORDER
-        form: {
-            areaName: 0,
-            responsePulled: 1,
-            isDuplicate: 2,
-            formTimestamp: 3,
-            submissionEmail: 4,
-            kiDate: 5,
-            np: 6,
-            sa: 7,
-            bd: 8,
-            bc: 9,
-            rca: 10,
-            rc: 11,
-            serviceHrs: 12,
-            cki: 13,
-            // "formNotes": 14,
-            // ...additional form data (ex. baptism sources)
-        },
-
-        // CONTACT SHEET COLUMN ORDER
-        contact: {
-            dateContactGenerated: 0,
-            areaEmail: 1,
-            areaName: 2,
-            name1: 3,
-            position1: 4,
-            isTrainer1: 5,
-            name2: 6,
-            position2: 7,
-            isTrainer2: 8,
-            name3: 9,
-            position3: 10,
-            isTrainer3: 11,
-            district: 12,
-            zone: 13,
-            unitString: 14,
-            hasMultipleUnits: 15,
-            languageString: 16,
-            isSeniorCouple: 17,
-            isSisterArea: 18,
-            hasVehicle: 19,
-            vehicleMiles: 20,
-            vinLast8: 21,
-            aptAddress: 22,
-        },
-
-        //DATA SHEET COLUMN ORDER
-        data: {
-            areaName: 0,
-            log: 1,
-            areaEmail: 2,
-            isDuplicate: 3,
-            formTimestamp: 4, //form data
-            areaID: 5,
-            kiDate: 6, //form data
-
-            np: 7, //form data
-            sa: 8, //form data
-            bd: 9, //form data
-            bc: 10, //form data
-            rca: 11, //form data
-            rc: 12, //form data
-            serviceHrs: 14, //form data
-
-            name1: 15,
-            position1: 16,
-            isTrainer1: 17,
-            name2: 18,
-            position2: 19,
-            isTrainer2: 20,
-            name3: 21,
-            position3: 22,
-            isTrainer3: 23, // hello, update!
-
-            cki: 13, //form data
-            // super confused
-            districtLeader: 24,
-            zoneLeader1: 25,
-            zoneLeader2: 26,
-            zoneLeader3: 27,
-            stl1: 28,
-            stl2: 29,
-            stl3: 30,
-            stlt1: 31,
-            stlt2: 32,
-            stlt3: 33,
-            assistant1: 34,
-            assistant2: 35,
-            assistant3: 36,
-
-            district: 37,
-            zone: 38,
-            unitString: 39,
-            hasMultipleUnits: 40,
-            languageString: 41,
-            isSeniorCouple: 42,
-            isSisterArea: 43,
-            hasVehicle: 44,
-            vehicleMiles: 45,
-            vinLast8: 46,
-            aptAddress: 47,
-
-            "bap-self-ref": 48,
-            "bap-street": 49,
-            "bap-ward-activity-or-event": 50,
-            "bap-ref-recent-convert": 51,
-            "bap-ref-part-member": 52,
-            "bap-ref-other-member": 53,
-            "bap-ref-teaching-pool": 54,
-            "bap-ref-other-non-member": 55,
-            "bap-fb-mission": 56,
-            "bap-fb-personal": 57,
-            "bap-family-history": 58,
-            "bap-taught-prev": 59,
-            "fb-role": 60,
-            "fb-ref-ysa": 61,
-            "fb-ref-asl": 62,
-            "fb-ref-service": 63,
-            "fb-ref-laredo-spa": 64,
-            "fb-ref-laredo-eng": 65,
-            "fb-ref-rgv-spa": 66,
-            "fb-ref-rgv-eng": 67,
-            "fb-ref-corpus": 68,
-            // "formNotes": 48,    //form data
-            //...additional form data (ex. baptism sources)
-        },
-        localData: {
-            areaName: 0,
-            log: 1,
-            areaEmail: 2,
-            isDuplicate: 3,
-            formTimestamp: 4, //form data
-            areaID: 5,
-            kiDate: 6, //form data
-
-            np: 7, //form data
-            sa: 8, //form data
-            bd: 9, //form data
-            bc: 10, //form data
-            rca: 11, //form data
-            rc: 12, //form data
-            cki: 13, //form data
-            serviceHrs: 14, //form data
-
-            name1: 15,
-            position1: 16,
-            isTrainer1: 17,
-            name2: 18,
-            position2: 19,
-            isTrainer2: 20,
-            name3: 21,
-            position3: 22,
-            isTrainer3: 23, // hello, update!
-
-            // super confused
-            districtLeader: 24,
-            zoneLeader1: 25,
-            zoneLeader2: 26,
-            zoneLeader3: 27,
-            stl1: 28,
-            stl2: 29,
-            stl3: 30,
-            stlt1: 31,
-            stlt2: 32,
-            stlt3: 33,
-            assistant1: 34,
-            assistant2: 35,
-            assistant3: 36,
-
-            district: 37,
-            zone: 38,
-            unitString: 39,
-            hasMultipleUnits: 40,
-            languageString: 41,
-            isSeniorCouple: 42,
-            isSisterArea: 43,
-            hasVehicle: 44,
-            vehicleMiles: 45,
-            vinLast8: 46,
-            aptAddress: 47,
-            // "formNotes": 48,    //form data
-            //...additional form data (ex. baptism sources)
-            "bap-self-ref": 48,
-            "bap-street": 49,
-            "bap-ward-activity-or-event": 50,
-            "bap-ref-recent-convert": 51,
-            "bap-ref-part-member": 52,
-            "bap-ref-other-member": 53,
-            "bap-ref-teaching-pool": 54,
-            "bap-ref-other-non-member": 55,
-            "bap-fb-mission": 56,
-            "bap-fb-personal": 57,
-            "bap-family-history": 58,
-            "bap-taught-prev": 59,
-            "fb-role": 60,
-            "fb-ref-ysa": 61,
-            "fb-ref-asl": 62,
-            "fb-ref-service": 63,
-            "fb-ref-laredo-spa": 64,
-            "fb-ref-laredo-eng": 65,
-            "fb-ref-rgv-spa": 66,
-            "fb-ref-rgv-eng": 67,
-            "fb-ref-corpus": 68,
-        },
-        debug: {
-            functionName: 0,
-            baseFunction: 1,
-            triggerType: 2,
-            timeStarted: 3,
-            timeEnded: 4,
-            commit_sha: 5,
-            action_event_name: 6,
-            github_actor: 7,
-            job_id: 8,
-            github_repository: 9,
-            github_branch_ref: 10,
-            executionCounter: 11,
-            cycleEndMillis: 12,
-            duration: 13,
-            cycleStartMillis: 14,
-            failures: 15
-        },
-        tmmReport: {
-            areaName: 0,
-            district: 1,
-            zone: 2,
-            np: 3,
-            sa: 4,
-            bd: 5,
-            bc: 6,
-            rrPercent: 7,
-            serviceHrs: 8,
-            cki: 9,
-            hasVehicle: 10,
-            truncLang: 11,
-            combinedNames: 12,
-        },
-        serviceRep: {
-            areaName: 0,
-            areaID: 1,
-            district: 2,
-            zone: 3,
-            combinedNames: 4,
-            kiDate: 5,
-            serviceHrs: 6,
-        },
-        fbReferrals: {
-            areaName: 0,
-            areaID: 1,
-            district: 2,
-            zone: 3,
-            combinedNames: 4,
-            kiDate: 5,
-            "fb-role": 6,
-            "fb-ref-ysa": 7,
-            "fb-ref-asl": 8,
-            "fb-ref-service": 9,
-            "fb-ref-laredo-spa": 10,
-            "fb-ref-laredo-eng": 11,
-            "fb-ref-rgv-spa": 12,
-            "fb-ref-rgv-eng": 13,
-            "fb-ref-corpus": 14,
-        },
-    };
-
-
-
-    const tabNames = {
-        form: "Form Responses",
-        contact: "Contact Data",
-        data: "Data",
-        debug: "DEBUG SHEET",
-        localData: "Data-TEST",
-        tmmReport: "TMM Report Printable",
-        serviceRep: "All Data",
-        fbReferrals: "techSquad Data",
-
-
-    };
-
-    const headerRows = {
-        contact: 0,
-        data: 0,
-        debug: 0,
-        form:0,
-        localData: 1,
-        tmmReport: 9,
-        serviceRep: 2,
-        fbReferrals: 1,
-
-    };
-
-    const targetSpreadsheet = {
-        form: CONFIG.dataFlow.sheetTargets.form,
-        data: CONFIG.dataFlow.sheetTargets.data,
-        contact: CONFIG.dataFlow.sheetTargets.contact,
-        debug: CONFIG.dataFlow.sheetTargets.debug,
-        localData: CONFIG.dataFlow.sheetTargets.localData,
-        tmmReport: CONFIG.dataFlow.sheetTargets.tmmReport,
-        serviceRep: CONFIG.dataFlow.sheetTargets.serviceRep,
-        fbReferrals: CONFIG.dataFlow.sheetTargets.fbReferrals
-    };
-
-
-    //END Static properties and parameters
-
-    let log = "Constructed SheetData objects: ";
-
-    //Define SheetData instances
-    let allSheetData = {};
-    for (let sdKey in tabNames) {
-        let rawSheetData = new RawSheetData(tabNames[sdKey], headerRows[sdKey], initialColumnOrders[sdKey], targetSpreadsheet[sdKey]);
-        let sheetData = new SheetData(rawSheetData);
-        // TODO THIS IS CURRENTLY DISABLED
-        // honestly might be *useful* to leave it off, because then I can just leave out things ezpz
-        // populateExtraColumnData_(sheetData);    //Add non-hardcoded key strings
-
-        allSheetData[sdKey] = sheetData;
-        log += " '" + sheetData.getTabName() + "'";
-    }
-    console.log(log);
-
-    //    refreshContacts(allSheetData);
-    // TODO TEST
-    // // TODO THIS IS CURRENTLY DISABLED
-    // TESTING WHOOOOOOOOO
-    syncDataFlowCols_(allSheetData.data,allSheetData.form);
-    // I can't actually test this on here, I'll have to wait until I get this class pushed to a BERT-INSTANCE
-    // this isn't implemented.
-    //setSheetsUp_(allSheetData);
-
-    //?   Object.freeze(allSheetData);
-
-
-    if (CONFIG.dataFlow.allSheetData_cacheEnabled) cacheAllSheetData(allSheetData);
-
+    let allSheetData = constructSheetDataV2(sheetDataConfig.local);
+    let preKey = allSheetData.data.getKeys();
+    syncDataFlowCols_(allSheetData.form, allSheetData.data);
+    let postKey = allSheetData.data.getKeys();
+    Logger.log(preKey);
+    Logger.log(postKey);
     return allSheetData;
-
 }
 
-function testSheetData() {
-    let allSheetData = constructSheetData();
-
-    Logger.log("Data SheetData:");
-    Logger.log(allSheetData.data);
-
-    Logger.log("Headers:");
-    Logger.log(allSheetData.data.getHeaders());
-    // Logger.log(allSheetData.data.getHeaders());
-    // Logger.log(allSheetData.data.getHeaders());
-    // Logger.log(allSheetData.data.getHeaders());
-
-    let data = allSheetData.contact.getData();
-    allSheetData.data.insertData(data);
+function testConstructor() {
+    let test = constructSheetData();
 }
 
 function clearAllSheetDataCache() {
     let cache = CacheService.getDocumentCache();
     // former ignore
     cache.remove("allSheetData");
+}
+
+
+function testCachingV2() {
+    let allSheetData = constructSheetDataV2(sheetDataConfig.local);
+    cacheAllSheetData(allSheetData);
+
+    let allSheetData2 = getAllSheetDataFromCache();
+    if (JSON.stringify(allSheetData) == JSON.stringify(allSheetData2)) {
+        console.log("To and From Cache on local sheetData probably worked");
+    }
+
+    let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
+    cacheAllSheetData(remoteSheetData);
+    let allSheetDataRemote = getAllSheetDataFromCache();
+    if (JSON.stringify(remoteSheetData) == JSON.stringify(allSheetDataRemote)) {
+        console.log("To and From Cache on remote sheetData probably worked");
+    }
 }

@@ -53,6 +53,8 @@ interface manySheetDatas {
     [index: string]: SheetData,
 }
 
+
+
 /**
  * constructSheetDataV2: creates an allSheetData type object, which should *ideally* be able to run from cache on remote targets as well!
  *
@@ -61,23 +63,31 @@ interface manySheetDatas {
  */
 function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     let allSheetData: manySheetDatas = {};
-    let keys:string[] = ["Constructed SheetData objects for:"]
+    let keys: string[] = ["Constructed SheetData objects for:"];
     for (let key in target) {
-        let entry = target[key]
-        let targetSheet:string|null = null
+        let entry = target[key];
+        let targetSheet: string | null = null;
         if (entry.sheetId != undefined && entry.sheetId != null && entry.sheetId != "") {
-            targetSheet = entry.sheetId
+            targetSheet = entry.sheetId;
         }
-        let rawSheetData = new RawSheetData(entry.tabName, entry.headerRow, entry.initialColumnOrder, targetSheet)
-        let sheetData = new SheetData(rawSheetData)
-        keys.push(key)
-        allSheetData[key] = sheetData
+        let rawSheetData = new RawSheetData(
+            entry.tabName,
+            entry.headerRow,
+            entry.initialColumnOrder,
+            entry.includeSoftcodedColumns,
+            targetSheet,
+            entry.allowWrite,
+        );
+        let sheetData = new SheetData(rawSheetData);
+        keys.push(key);
+        allSheetData[key] = sheetData;
     }
     // dunno if this will work or not yet, but we'll see!
     // syncDataFlowCols_(allSheetData.form, allSheetData.data)
 
     return allSheetData;
 }
+
 
 
 interface sheetDataEntry {
@@ -105,7 +115,7 @@ interface columnConfig {
 //     return obj
 // }
 
-let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
+let sheetDataConfig2: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
     local: {
         form: {
             tabName: "Form Responses-DSHLA",

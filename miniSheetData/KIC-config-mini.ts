@@ -45,15 +45,16 @@ let INTERNAL_CONFIG = {
 
         sheetTargets: {
             // these should be specified if you want to hit a thing outside of the local datastore.
-            form: "SECRETS SHOULD REPLACE THIS WITH AN ID",
-            data: "SECRETS SHOULD REPLACE THIS WITH AN ID",
-            headerTest: SpreadsheetApp.getActiveSpreadsheet().getId()
-            // contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            // debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            form: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            data: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // headerTest: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            contact: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            debug: SpreadsheetApp.getActiveSpreadsheet().getId(),
             // localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
             tmmReport: SpreadsheetApp.getActiveSpreadsheet().getId(),
-            serviceRep: "SECRETS SHOULD REPLACE THIS WITH AN ID",
-            techSquad: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            serviceRep: "SECRETS SHOULD REPLACE THIS WITH AN ID!",
+            techSquad: "SECRETS SHOULD REPLACE THIS WITH AN ID!",
+            remoteData:"SECRETS SHOULD REPLACE THIS WITH AN ID!",
         },
 
     },
@@ -121,7 +122,7 @@ function getSheetDataConfig(): { local: manySheetDataEntries, remote: manySheetD
     let CONFIG = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA, OVERRIDE_SECRET_DATA);
     // this is stuck inside of a function for no other reason than that I was having some problems with it being static and referencing the CONFIG before that was declared.
 
-    let sheetDataConfig: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
+    let sheetDataConfigBad: { local: manySheetDataEntries, remote: manySheetDataEntries; } = {
         local: {
             form: {
                 tabName: "Form Responses_HLA",
