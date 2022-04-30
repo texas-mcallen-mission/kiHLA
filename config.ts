@@ -53,7 +53,7 @@ let INTERNAL_CONFIG:config = {
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
 var _ = lodash.load();
-let CONFIG: config = _.merge(GITHUB_SECRET_DATA,INTERNAL_CONFIG, GITHUB_SECRET_DATA);
+let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
 
 // function loadConfig() {
 //     let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
@@ -64,6 +64,8 @@ let CONFIG: config = _.merge(GITHUB_SECRET_DATA,INTERNAL_CONFIG, GITHUB_SECRET_D
 let sheetDataConfig: manySheetDataEntries = loadSheetConfig()
 
 function loadSheetConfig(): manySheetDataEntries {
+    CONFIG = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
+
     let sheetDataConfig: manySheetDataEntries = {
         localData: {
             tabName: "Data",
