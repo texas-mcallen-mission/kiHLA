@@ -22,6 +22,10 @@ const OVERRIDE_SECRET_DATA = {
     // stick things in here to override config values.
 }
 
+function loadConfigs() {
+    CONFIG = getConfig();
+    sheetDataConfig = loadSheetConfig();
+}
 
 let INTERNAL_CONFIG:config = {
     sheetTargets: {

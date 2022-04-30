@@ -61,7 +61,7 @@ function testSyncDataFlowCols() {
  *
  */
 function updateTMMReport() {
-    // loadConfig()
+    loadConfigs()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
     let allSheetData = constructSheetDataV2(sheetDataConfig);
     // sheetDataConfig.remote.
