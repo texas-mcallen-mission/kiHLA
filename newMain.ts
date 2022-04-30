@@ -33,7 +33,7 @@ function testBattery() {
 }
 
 function updateLocalDataStore() {
-    let allSheetData = constructSheetDataV2(sheetData);
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
     let data = allSheetData.remoteData.getData();
@@ -49,7 +49,7 @@ function updateLocalDataStore() {
 
 
 function testSyncDataFlowCols() {
-    let allSheetData: manySheetDatas = constructSheetDataV2(sheetData);
+    let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
     allSheetData.localData.addKeys(allSheetData.form);
 
 
@@ -61,9 +61,9 @@ function testSyncDataFlowCols() {
  *
  */
 function updateTMMReport() {
-    loadConfig()
+    // loadConfig()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let allSheetData = constructSheetDataV2(sheetData);
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
     // sheetDataConfig.remote.
     let kicData = new kiDataClass( allSheetData.localData.getData())
 
@@ -71,7 +71,7 @@ function updateTMMReport() {
     // let kicData = new kiDataClass(data);
     let tmmReport = allSheetData.tmmReport;
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
-    kicData.createSumOfKeys(INTERNAL_CONFIG.kiData.fb_referral_keys, INTERNAL_CONFIG.kiData.new_key_names.fb_referral_sum);
+    kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
     let tmmReportData = kicData.removeDuplicates().getThisWeeksData().addShortLang().calculateCombinedName().end;
     // this gets rid of any and all data that might be left behind- in practice, this clears the sheet when there are no responses for the current week.
     // tmmReport.clearContent()
@@ -79,8 +79,8 @@ function updateTMMReport() {
 }
 
 function updateTechSquadReport() {
-    loadConfig()
-    let allSheetData = constructSheetDataV2(sheetData);
+    // loadConfig()
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
     
     let dataSheet = allSheetData.localData;
 
@@ -90,7 +90,7 @@ function updateTechSquadReport() {
 
 
     let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
-    kicData.createSumOfKeys(INTERNAL_CONFIG.kiData.fb_referral_keys, INTERNAL_CONFIG.kiData.new_key_names.fb_referral_sum);
+    kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
 
     let refData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().end;
 
@@ -99,7 +99,7 @@ function updateTechSquadReport() {
 
 
 function updateServiceRepReport() {
-    let allSheetData = constructSheetDataV2(sheetData);
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
     let dataSheet = allSheetData.localData;
