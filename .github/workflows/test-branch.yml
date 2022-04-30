@@ -3,7 +3,7 @@ name: HLA Test Branch
 on:
   workflow_dispatch:
   push:
-    branches: [bugfix-update]
+    branches: [testing-sheetCore]
   release:
     types: [published]
   schedule:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@v2.2.0
+    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@v2.3.0_pre
     with:
       # Github repository information
       sha: ${{ github.sha }}
