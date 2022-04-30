@@ -63,9 +63,9 @@ let INTERNAL_CONFIG:config = {
 var _ = lodash.load();
 
 function getConfig(): config {
-    let pre_config = _.deepClone(INTERNAL_CONFIG);
-    let mod1 = _.deepClone(GITHUB_SECRET_DATA);
-    let mod2 = _.deepClone(OVERRIDE_SECRET_DATA)
+    let pre_config = _.cloneDeep(INTERNAL_CONFIG);
+    let mod1 = _.cloneDeep(GITHUB_SECRET_DATA);
+    let mod2 = _.cloneDeep(OVERRIDE_SECRET_DATA)
     let config = _.merge(pre_config, mod1, mod2)
     console.log(config)
     return config;
