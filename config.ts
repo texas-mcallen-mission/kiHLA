@@ -55,11 +55,17 @@ let INTERNAL_CONFIG:config = {
 var _ = lodash.load();
 let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
 
+function loadConfig() {
+    let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
+    let sheetDataConfig = sheetData
+    sheetData = sheetDataConfig
+}
+
 let sheetData: manySheetDataEntries = {
     localData: {
         tabName: "Data",
         headerRow: 0,
-        sheetId: CONFIG.sheetTargets.localData,
+        sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
         includeSoftcodedColumns: true,
         allowWrite: true,
         keyNamesToIgnore: ["responsePulled", "submissionEmail"],
@@ -147,7 +153,7 @@ let sheetData: manySheetDataEntries = {
     localForms: {
         tabName: "Form Responses",
         headerRow: 0,
-        sheetId: CONFIG.sheetTargets.localData,
+        sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
         includeSoftcodedColumns: true,
         allowWrite: false,
         initialColumnOrder: {

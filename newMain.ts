@@ -9,8 +9,6 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
         keys.push(key);
         allSheetData[key] = sheetData;
     }
-    // dunno if this will work or not yet, but we'll see!
-    // syncDataFlowCols_(allSheetData.form, allSheetData.data)
 
     return allSheetData;
 }
@@ -40,21 +38,19 @@ function updateLocalDataStore() {
     // let dataSource = remoteSheetData.remoteData;
     let data = allSheetData.remoteData.getData();
 
-    allSheetData.data.addKeys(allSheetData.remoteData);
+    allSheetData.localData.addKeys(allSheetData.remoteData);
 
-    // dataSource.addKeys(localSheetData.data)
-    // syncDataFlowCols_(dataSource, localSheetData.data)
-
+    
     let kicData = new kiDataClass(data);
 
-    allSheetData.data.setData(kicData.removeDuplicates().end);
+    allSheetData.localData.setData(kicData.removeDuplicates().end);
 
 }
 
 
 function testSyncDataFlowCols() {
     let allSheetData: manySheetDatas = constructSheetDataV2(sheetData);
-    allSheetData.data.addKeys(allSheetData.form);
+    allSheetData.;localData.addKeys(allSheetData.form);
 
 
 }
@@ -65,14 +61,15 @@ function testSyncDataFlowCols() {
  *
  */
 function updateTMMReport() {
+    loadConfig()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let remoteSheetData = constructSheetDataV2(sheetData);
+    let allSheetData = constructSheetDataV2(sheetData);
     // sheetDataConfig.remote.
-    let dataSheet = remoteSheetData.remoteData;
+    let kicData = new kiDataClass( allSheetData.localData.getData())
 
-    let data = dataSheet.getData();
-    let kicData = new kiDataClass(data);
-    let tmmReport = remoteSheetData.tmmReport;
+    // let data = dataSheet.getData();
+    // let kicData = new kiDataClass(data);
+    let tmmReport = allSheetData.tmmReport;
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
     kicData.createSumOfKeys(INTERNAL_CONFIG.kiData.fb_referral_keys, INTERNAL_CONFIG.kiData.new_key_names.fb_referral_sum);
     let tmmReportData = kicData.removeDuplicates().getThisWeeksData().addShortLang().calculateCombinedName().end;
@@ -82,9 +79,10 @@ function updateTMMReport() {
 }
 
 function updateTechSquadReport() {
+    loadConfig()
     let allSheetData = constructSheetDataV2(sheetData);
     
-    let dataSheet = allSheetData.data;
+    let dataSheet = allSheetData.localData;
 
     let data = dataSheet.getData();
     let kicData = new kiDataClass(data);
@@ -104,7 +102,7 @@ function updateServiceRepReport() {
     let allSheetData = constructSheetDataV2(sheetData);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
-    let dataSheet = allSheetData.data;
+    let dataSheet = allSheetData.localData;
 
     let data = dataSheet.getData();
     let kicData = new kiDataClass(data);
