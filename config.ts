@@ -18,6 +18,10 @@ var sheetCoreConfig: sheetCoreConfigInfo = {
     cacheKey:"HEY THERE IT ME!"
 }
 
+const OVERRIDE_SECRET_DATA = {
+    // stick things in here to override config values.
+}
+
 
 let INTERNAL_CONFIG:config = {
     sheetTargets: {
@@ -53,7 +57,7 @@ let INTERNAL_CONFIG:config = {
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
 var _ = lodash.load();
-let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
+let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA,OVERRIDE_SECRET_DATA);
 
 // function loadConfig() {
 //     let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
@@ -64,7 +68,8 @@ let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
 let sheetDataConfig: manySheetDataEntries = loadSheetConfig()
 
 function loadSheetConfig(): manySheetDataEntries {
-    CONFIG = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA);
+    console.log("SheetConfig ran!")
+    CONFIG = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA,OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
         localData: {
