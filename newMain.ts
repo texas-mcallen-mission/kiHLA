@@ -50,7 +50,7 @@ function updateLocalDataStore() {
 
 function testSyncDataFlowCols() {
     let allSheetData: manySheetDatas = constructSheetDataV2(sheetData);
-    allSheetData.;localData.addKeys(allSheetData.form);
+    allSheetData.localData.addKeys(allSheetData.form);
 
 
 }
