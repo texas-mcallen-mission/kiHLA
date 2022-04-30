@@ -10,6 +10,6 @@ const GITHUB_DATA = {
   github_branch_ref: "REFNAME", // done
 };
 
-const GITHUB_SECRET_DATA = {
+var GITHUB_SECRET_DATA = {
   //PYTHON_STICKS_CONFIG_DATA_HERE
 };

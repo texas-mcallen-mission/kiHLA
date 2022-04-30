@@ -22,7 +22,7 @@ function testBattery() {
         tmm: updateTMMReport,
         techSquad: updateTechSquadReport,
         serviceRep: updateServiceRepReport,
-        newHeader: testNewHeader,
+        // newHeader: testNewHeader,
         updateData: updateLocalDataStore,
     };
     for (let entry in tests) {
@@ -53,48 +53,12 @@ function updateLocalDataStore() {
 
 
 function testSyncDataFlowCols() {
-    let allSheetData2: manySheetDatas = constructSheetDataV2(sheetDataConfig.local);
-    allSheetData2.data.addKeys(allSheetData2.form);
-    // syncDataFlowCols_(allSheetData2.form,allSheetData2.data)
+    let allSheetData: manySheetDatas = constructSheetDataV2(sheetData);
+    allSheetData.data.addKeys(allSheetData.form);
 
-    let kiData = allSheetData2.form.getData();
-    console.log("testing adding new keys");
-    allSheetData2.data.insertData(kiData);
-    console.log("GO check the datasheet");
+
 }
 
-function testNewHeader() {
-    // step one: target the right sheet:
-    let targetSheet: sheetDataEntry = sheetDataConfig.local.headerTest;
-    // step two: open the spreadsheet long enough to delete the target.
-    let targetID = "";
-    if (targetSheet.sheetId == null || targetSheet.sheetId == undefined) {
-        targetID = SpreadsheetApp.getActiveSpreadsheet().getId();
-    } else {
-        targetID = targetSheet.sheetId;
-    }
-    let spreadsheet = SpreadsheetApp.openById(targetID);
-    let sheet = spreadsheet.getSheetByName(targetSheet.tabName);
-    if (sheet != null) {
-        spreadsheet.deleteSheet(sheet);
-    }
-    /* this was a really annoying one to track down: essentially because I was deleting the sheet, and spreadsheetApp 
-    hadn't committed the changes to the server yet (because I/O is time-expensive), there were some really weird bugs.
-    EVERY TIME the code ran, I got a ``Service Spreadsheets timed out while accessing document with [ID]`` error.
-
-    Super frustrating, cost me like an entire hour.
-    */
-    SpreadsheetApp.flush();
-
-    // step three: create a rawSheetData class.
-    let rawSheetData = new RawSheetData(targetSheet);
-    let headerTestSheet = new SheetData(rawSheetData);
-
-    populateExtraColumnData_(headerTestSheet);
-    headerTestSheet.setHeaders(headerTestSheet.getHeaders());
-    // at this point, it should be done!
-    console.log("go check the header on sheet ", targetSheet.tabName);
-}
 
 /**
  *  updates the TMM report
@@ -102,7 +66,7 @@ function testNewHeader() {
  */
 function updateTMMReport() {
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
+    let remoteSheetData = constructSheetDataV2(sheetData);
     // sheetDataConfig.remote.
     let dataSheet = remoteSheetData.remoteData;
 
@@ -118,14 +82,13 @@ function updateTMMReport() {
 }
 
 function updateTechSquadReport() {
-    let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
-
-    let dataSheet = localSheetData.data;
+    let allSheetData = constructSheetDataV2(sheetData);
+    
+    let dataSheet = allSheetData.data;
 
     let data = dataSheet.getData();
     let kicData = new kiDataClass(data);
-    let techReport = remoteSheetData.techSquad;
+    let techReport = allSheetData.techSquad;
 
 
     let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these

@@ -1,12 +1,25 @@
 interface config {
-    sheetTargets: manySheetIds;
+    sheetTargets: manyKeyPairs;
+    kiData:kiDataConfig
 }
 
-interface manySheetIds {
+interface manyKeyPairs {
     [index: string]: string;
 }
 
-let INTERNAL_CONFIG = {
+interface kiDataConfig {
+    "fb_referral_keys": string[],
+    "new_key_names": manyKeyPairs
+}
+
+var sheetCoreConfig: sheetCoreConfigInfo = {
+    cacheEnabled: true,
+    cacheExpiration: 1800,
+    cacheKey:"HEY THERE IT ME!"
+}
+
+
+let INTERNAL_CONFIG:config = {
     sheetTargets: {
         localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
         serviceRep: "Hey, this should get set by secrets",
@@ -15,7 +28,27 @@ let INTERNAL_CONFIG = {
         remoteData: "Hey, this should get set by secrets",
 
 
-    }
+    },
+    kiData: {
+        fb_referral_keys: [
+            "fb-ref-ysa",
+            "fb-ref-asl",
+            "fb-ref-service",
+            "fb-ref-laredo-spa",
+            "fb-ref-laredo-eng",
+            "fb-ref-rgv-spa",
+            "fb-ref-rgv-eng",
+            "fb-ref-corpus",
+            "fb-ref-personal"
+        ],
+
+        new_key_names: {
+            fb_referral_sum: "fb-ref-sum",
+            retentionRate: "rrPercent",
+
+        },
+        
+    },
 };
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
