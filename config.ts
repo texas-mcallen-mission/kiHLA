@@ -15,7 +15,7 @@ interface kiDataConfig {
 var sheetCoreConfig: sheetCoreConfigInfo = {
     cacheEnabled: true,
     cacheExpiration: 1800,
-    cacheKey:"HEY THERE IT ME!"
+    cacheKey:"HEY THERE IT ME"
 }
 
 const OVERRIDE_SECRET_DATA = {
@@ -57,7 +57,7 @@ let INTERNAL_CONFIG:config = {
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
 var _ = lodash.load();
-let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA,OVERRIDE_SECRET_DATA);
+let CONFIG: config = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA),_.cloneDeep(OVERRIDE_SECRET_DATA));
 
 // function loadConfig() {
 //     let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
@@ -69,7 +69,7 @@ let sheetDataConfig: manySheetDataEntries = loadSheetConfig()
 
 function loadSheetConfig(): manySheetDataEntries {
     console.log("SheetConfig ran!")
-    CONFIG = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA,OVERRIDE_SECRET_DATA);
+    CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA),OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
         localData: {
