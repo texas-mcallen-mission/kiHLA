@@ -35,19 +35,19 @@ function testBattery() {
 }
 
 function updateLocalDataStore() {
-    let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
+    let allSheetData = constructSheetDataV2(sheetData);
+    // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
-    let data = remoteSheetData.remoteData.getData();
+    let data = allSheetData.remoteData.getData();
 
-    localSheetData.data.addKeys(remoteSheetData.remoteData);
+    allSheetData.data.addKeys(allSheetData.remoteData);
 
     // dataSource.addKeys(localSheetData.data)
     // syncDataFlowCols_(dataSource, localSheetData.data)
 
     let kicData = new kiDataClass(data);
 
-    localSheetData.data.setData(kicData.removeDuplicates().end);
+    allSheetData.data.setData(kicData.removeDuplicates().end);
 
 }
 
@@ -101,14 +101,14 @@ function updateTechSquadReport() {
 
 
 function updateServiceRepReport() {
-    let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
+    let allSheetData = constructSheetDataV2(sheetData);
+    // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
-    let dataSheet = localSheetData.data;
+    let dataSheet = allSheetData.data;
 
     let data = dataSheet.getData();
     let kicData = new kiDataClass(data);
-    let serviceReport = remoteSheetData.serviceRep;
+    let serviceReport = allSheetData.serviceRep;
 
     let startDate = new Date("2022-01-20");
     let serviceData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().end;
