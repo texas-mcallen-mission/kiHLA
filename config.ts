@@ -57,7 +57,17 @@ let INTERNAL_CONFIG:config = {
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
 var _ = lodash.load();
-let CONFIG: config = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA),_.cloneDeep(OVERRIDE_SECRET_DATA));
+
+function getConfig(): config {
+    let pre_config = _.deepClone(INTERNAL_CONFIG);
+    let mod1 = _.deepClone(GITHUB_SECRET_DATA);
+    let mod2 = _.deepClone(OVERRIDE_SECRET_DATA)
+    let config = _.merge(pre_config, mod1, mod2)
+    console.log(config)
+    return config;
+}
+
+let CONFIG: config = getConfig()
 
 // function loadConfig() {
 //     let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
