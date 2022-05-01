@@ -23,7 +23,8 @@ function testBattery() {
         serviceRep: updateServiceRepReport,
         // newHeader: testNewHeader,
         updateData: updateLocalDataStore,
-        updateFBpie:createFBpieChart,
+        updateFBpie: createFBpieChart,
+        updateBapPie: createBapChart,
     };
     for (let entry in tests) {
         let test = tests[entry];
@@ -120,6 +121,28 @@ function createFBpieChart() {
     let keysToKeep = ["areaName","areaEmail","isDuplicate","areaID","combinedNames","facebookRefs","kiDate"]
     let breakdownKeyName = "facebookRefs"
     let refData = kicData.removeDuplicates().calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.fb_referral_keys, breakdownKeyName).end;
+
+    fbBreakdown.setData(refData);
+}
+
+function createBapChart() {
+    
+    loadConfigs();
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
+
+    let dataSheet = allSheetData.localData;
+
+    let data = dataSheet.getData();
+    let kicData = new kiDataClass(data);
+    let fbBreakdown = allSheetData.baptismBreakdown;
+
+
+    let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
+    // kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
+
+    let keysToKeep = ["areaName", "areaEmail", "isDuplicate", "areaID", "combinedNames", "kiDate"];
+    let breakdownKeyName = "baptisms";
+    let refData = kicData.removeDuplicates().calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.baptism_source_keys, breakdownKeyName).end;
 
     fbBreakdown.setData(refData);
 }

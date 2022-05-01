@@ -9,7 +9,8 @@ interface manyKeyPairs {
 
 interface kiDataConfig {
     "fb_referral_keys": string[],
-    "new_key_names": manyKeyPairs
+    "baptism_source_keys":string[],
+    "new_key_names": manyKeyPairs,
 }
 
 var sheetCoreConfig: sheetCoreConfigInfo = {
@@ -49,11 +50,24 @@ let INTERNAL_CONFIG:config = {
             "fb-ref-corpus",
             "fb-ref-personal"
         ],
+        baptism_source_keys: [
+            "bap-self-ref",
+            "bap-street",
+            "bap-ward-activity-or-event",
+            "bap-ref-recent-convert",
+            "bap-ref-part-member",
+            "bap-ref-other-member",
+            "bap-ref-teaching-pool",
+            "bap-ref-other-non-member",
+            "bap-fb-mission",
+            "bap-fb-personal",
+            "bap-family-history",
+            "bap-taught-prev",
+        ],
 
         new_key_names: {
             fb_referral_sum: "fb-ref-sum",
             retentionRate: "rrPercent",
-
         },
         
     },
@@ -102,6 +116,23 @@ function loadSheetConfig(): manySheetDataEntries {
                 kiDate:7,
             }
             
+        },
+        baptismBreakdown: {
+            tabName: "bapPie",
+            headerRow: 0,
+            allowWrite: true,
+            includeSoftcodedColumns: false,
+            initialColumnOrder: {
+                areaName: 0,
+                areaEmail: 1,
+                isDuplicate: 2,
+                areaID: 3,
+                combinedNames: 4,
+                baptisms: 5,
+                breakdownKey: 6,
+                kiDate: 7,
+            }
+
         },
         localData: {
             tabName: "Data",
