@@ -45,7 +45,8 @@ function updateLocalDataStore() {
     allSheetData.localData.addKeys(allSheetData.remoteData);
     let kicData = new kiDataClass(data);
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
-    
+    kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
+
 
     allSheetData.localData.setData(kicData.removeDuplicates().end);
 
