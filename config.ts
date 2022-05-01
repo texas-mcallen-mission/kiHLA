@@ -96,7 +96,8 @@ function loadSheetConfig(): manySheetDataEntries {
                 areaEmail: 1,
                 isDuplicate: 2,
                 areaID: 3,
-                facebookRefs: 4,
+                combinedNames:4,
+                facebookRefs: 5,
             }
             
         },

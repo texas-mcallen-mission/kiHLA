@@ -117,9 +117,9 @@ function createFBpieChart() {
     let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
     kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
 
-    let keysToKeep = ["areaName","areaEmail","isDuplicate","areaID","facebookRefs"]
+    let keysToKeep = ["areaName","areaEmail","isDuplicate","areaID","combinedNames","facebookRefs"]
     let breakdownKeyName = "facebookRefs"
-    let refData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.fb_referral_keys, breakdownKeyName).end;
+    let refData = kicData.removeDuplicates().calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.fb_referral_keys, breakdownKeyName).end;
 
     fbBreakdown.setData(refData);
 }
