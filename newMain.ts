@@ -23,6 +23,7 @@ function testBattery() {
         serviceRep: updateServiceRepReport,
         // newHeader: testNewHeader,
         updateData: updateLocalDataStore,
+        updateFBpie:createFBpieChart,
     };
     for (let entry in tests) {
         let test = tests[entry];
@@ -99,6 +100,28 @@ function updateTechSquadReport() {
     let refData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().end;
 
     techReport.setData(refData);
+}
+
+function createFBpieChart() {
+
+    loadConfigs();
+    let allSheetData = constructSheetDataV2(sheetDataConfig);
+
+    let dataSheet = allSheetData.localData;
+
+    let data = dataSheet.getData();
+    let kicData = new kiDataClass(data);
+    let fbBreakdown = allSheetData.facebookBreakdown;
+
+
+    let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
+    kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
+
+    let keysToKeep = ["areaName","areaEmail","isDuplicate","areaID","facebookRefs"]
+    let breakdownKeyName = "facebookRefs"
+    let refData = kicData.removeDuplicates().removeBeforeDate(startDate).calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.fb_referral_keys, breakdownKeyName).end;
+
+    fbBreakdown.setData(refData);
 }
 
 

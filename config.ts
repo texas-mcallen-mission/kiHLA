@@ -86,10 +86,24 @@ function loadSheetConfig(): manySheetDataEntries {
     CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA),OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
+        facebookBreakdown: {
+            tabName: "facebookPie",
+            headerRow: 0,
+            allowWrite: true,
+            includeSoftcodedColumns:false,
+            initialColumnOrder: {
+                areaName: 0,
+                areaEmail: 1,
+                isDuplicate: 2,
+                areaID: 3,
+                facebookRefs: 4,
+            }
+            
+        },
         localData: {
             tabName: "Data",
             headerRow: 0,
-            sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
             includeSoftcodedColumns: true,
             allowWrite: true,
             keyNamesToIgnore: ["responsePulled", "submissionEmail"],
@@ -177,7 +191,7 @@ function loadSheetConfig(): manySheetDataEntries {
         localForms: {
             tabName: "Form Responses",
             headerRow: 0,
-            sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
+            // sheetId: SpreadsheetApp.getActiveSpreadsheet().getId(),
             includeSoftcodedColumns: true,
             allowWrite: false,
             initialColumnOrder: {
