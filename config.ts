@@ -98,7 +98,8 @@ function loadSheetConfig(): manySheetDataEntries {
                 areaID: 3,
                 combinedNames:4,
                 facebookRefs: 5,
-                breakdownKey:6,
+                breakdownKey: 6,
+                kiDate:7,
             }
             
         },
