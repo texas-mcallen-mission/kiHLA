@@ -188,6 +188,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 "fb-ref-rgv-eng": 67,
                 "fb-ref-corpus": 68,
                 "fb-ref-personal": 69,
+                rrPercent:70,
 
             },
         },
