@@ -43,9 +43,9 @@ function updateLocalDataStore() {
     let data = allSheetData.remoteData.getData();
 
     allSheetData.localData.addKeys(allSheetData.remoteData);
+    let kicData = new kiDataClass(data);
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
     
-    let kicData = new kiDataClass(data);
 
     allSheetData.localData.setData(kicData.removeDuplicates().end);
 
