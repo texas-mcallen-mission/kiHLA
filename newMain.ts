@@ -14,6 +14,7 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
 }
 
 function testBattery() {
+    loadConfigs()
     let startTime = new Date();
     console.log("Starting All Tests");
     let tests = {
@@ -33,6 +34,7 @@ function testBattery() {
 }
 
 function updateLocalDataStore() {
+    loadConfigs()
     let allSheetData = constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
@@ -49,6 +51,7 @@ function updateLocalDataStore() {
 
 
 function testSyncDataFlowCols() {
+    loadConfigs()
     let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
     allSheetData.localData.addKeys(allSheetData.form);
 
@@ -80,6 +83,7 @@ function updateTMMReport() {
 
 function updateTechSquadReport() {
     // loadConfig()
+    loadConfigs()
     let allSheetData = constructSheetDataV2(sheetDataConfig);
     
     let dataSheet = allSheetData.localData;
@@ -99,6 +103,7 @@ function updateTechSquadReport() {
 
 
 function updateServiceRepReport() {
+    loadConfigs()
     let allSheetData = constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
