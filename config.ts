@@ -258,13 +258,13 @@ function loadSheetConfig(): manySheetDataEntries {
                 "bap-family-history": 24,
                 "bap-taught-prev": 25,
                 "fb-role": 26,
-                "fb-ref-ysa": 27,
-                "fb-ref-asl": 28,
-                "fb-ref-service": 29,
+                "fb-ref-rgv-eng": 27,
+                "fb-ref-rgv-spa": 28,
+                "fb-ref-laredo-eng": 29,
                 "fb-ref-laredo-spa": 30,
-                "fb-ref-laredo-eng": 31,
-                "fb-ref-rgv-spa": 32,
-                "fb-ref-rgv-eng": 33,
+                "fb-ref-ysa": 31,
+                "fb-ref-asl": 32,
+                "fb-ref-service": 33,
                 "fb-ref-corpus": 34,
                 "fb-ref-personal": 35,
             }
@@ -344,19 +344,17 @@ function loadSheetConfig(): manySheetDataEntries {
                 log: 1,
                 areaEmail: 2,
                 isDuplicate: 3,
-                formTimestamp: 4, //form data
+                formTimestamp: 4,
                 areaID: 5,
-                kiDate: 6, //form data
-
-                np: 7, //form data
-                sa: 8, //form data
-                bd: 9, //form data
-                bc: 10, //form data
-                rca: 11, //form data
-                rc: 12, //form data
-                cki: 13, //form data
-                serviceHrs: 14, //form data
-
+                kiDate: 6,
+                np: 7,
+                sa: 8,
+                bd: 9,
+                bc: 10,
+                rca: 11,
+                rc: 12,
+                cki: 13,
+                serviceHrs: 14,
                 name1: 15,
                 position1: 16,
                 isTrainer1: 17,
@@ -365,9 +363,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 isTrainer2: 20,
                 name3: 21,
                 position3: 22,
-                isTrainer3: 23, // hello, update!
-
-                // super confused
+                isTrainer3: 23,
                 districtLeader: 24,
                 zoneLeader1: 25,
                 zoneLeader2: 26,
@@ -381,7 +377,6 @@ function loadSheetConfig(): manySheetDataEntries {
                 assistant1: 34,
                 assistant2: 35,
                 assistant3: 36,
-
                 district: 37,
                 zone: 38,
                 unitString: 39,
@@ -393,8 +388,6 @@ function loadSheetConfig(): manySheetDataEntries {
                 vehicleMiles: 45,
                 vinLast8: 46,
                 aptAddress: 47,
-                // "formNotes": 48,    //form data
-                //...additional form data (ex. baptism sources)
                 "bap-self-ref": 48,
                 "bap-street": 49,
                 "bap-ward-activity-or-event": 50,
@@ -408,13 +401,13 @@ function loadSheetConfig(): manySheetDataEntries {
                 "bap-family-history": 58,
                 "bap-taught-prev": 59,
                 "fb-role": 60,
-                "fb-ref-ysa": 61,
-                "fb-ref-asl": 62,
-                "fb-ref-service": 63,
+                "fb-ref-rgv-eng": 61,
+                "fb-ref-rgv-spa": 62,
+                "fb-ref-laredo-eng": 63,
                 "fb-ref-laredo-spa": 64,
-                "fb-ref-laredo-eng": 65,
-                "fb-ref-rgv-spa": 66,
-                "fb-ref-rgv-eng": 67,
+                "fb-ref-ysa": 65,
+                "fb-ref-asl": 66,
+                "fb-ref-service": 67,
                 "fb-ref-corpus": 68,
                 "fb-ref-personal": 69,
 
