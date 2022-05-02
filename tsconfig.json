@@ -7,8 +7,7 @@
         "types": [
             "google-apps-script"
         ],
-        "outDir": "./ts",
-        "rootDir": "./"
+        "outDir": "./"
         
     }
 }
