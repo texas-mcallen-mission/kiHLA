@@ -330,6 +330,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 "fb-ref-corpus": 14,
                 "fb-ref-personal": 15,
                 "fb-ref-sum": 16,
+                isDuplicate:17,
             },
         },
         remoteData: {
