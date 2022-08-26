@@ -1,3 +1,3 @@
 [submodule "sheetcore"]
 	path = sheetcore
-	url = https://github.com/texas-mcallen-mission/sheetcore
+	url = git://github.com/texas-mcallen-mission/sheetcore.git
