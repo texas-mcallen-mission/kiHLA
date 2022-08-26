@@ -3,7 +3,7 @@ name: HLA Test Branch
 on:
   workflow_dispatch:
   push:
-    branches: [testing-sheetCore]
+    branches: [facebook-updating]
   release:
     types: [published]
   schedule:
