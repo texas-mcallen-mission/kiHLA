@@ -16,7 +16,7 @@ interface kiDataConfig {
 var sheetCoreConfig: sheetCoreConfigInfo = {
     cacheEnabled: true,
     cacheExpiration: 1800,
-    cacheKey:"HEY THERE IT ME"
+    cacheKey:"HEY THERE IT ME 2"
 }
 
 const OVERRIDE_SECRET_DATA = {
