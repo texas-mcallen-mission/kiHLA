@@ -2,7 +2,7 @@ interface config {
     sheetTargets: manyKeyPairs;
     kiData:kiDataConfig
 }
-
+ // DIDITGOTHROUGH
 interface manyKeyPairs {
     [index: string]: string;
 }
