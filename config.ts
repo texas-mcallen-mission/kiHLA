@@ -1,40 +1,42 @@
 interface config {
     sheetTargets: manyKeyPairs;
-    kiData:kiDataConfig
+    kiData: kiDataConfig;
 }
- // DIDITGOTHROUGH
+// DIDITGOTHROUGH
 interface manyKeyPairs {
     [index: string]: string;
 }
 
 interface kiDataConfig {
     "fb_referral_keys": string[],
-    "baptism_source_keys":string[],
+    "baptism_source_keys": string[],
     "new_key_names": manyKeyPairs,
 }
 
 var sheetCoreConfig: sheetCoreConfigInfo = {
     cacheEnabled: true,
     cacheExpiration: 1800,
-    cacheKey:"HEY THERE IT ME"
-}
+    cacheKey: "HEY THERE IT ME"
+};
 
 const OVERRIDE_SECRET_DATA = {
     // stick things in here to override config values.
-}
+};
 
 function loadConfigs() {
     CONFIG = getConfig();
     sheetDataConfig = loadSheetConfig();
 }
 
-let INTERNAL_CONFIG:config = {
+let INTERNAL_CONFIG: config = {
     sheetTargets: {
         localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
         serviceRep: "Hey, this should get set by secrets",
         tmmReport: "Hey, this should get set by secrets",
         techSquad: "Hey, this should get set by secrets",
         remoteData: "Hey, this should get set by secrets",
+        remoteDebugStream: "Hey, this should get set by secrets",
+        remoteDebugLong: "Hey, this should also get set by secrets."
 
 
     },
@@ -71,7 +73,7 @@ let INTERNAL_CONFIG:config = {
             fb_referral_sum: "fb-ref-sum",
             retentionRate: "rrPercent",
         },
-        
+
     },
 };
 
@@ -81,13 +83,13 @@ var _ = lodash.load();
 function getConfig(): config {
     let pre_config = _.cloneDeep(INTERNAL_CONFIG);
     let mod1 = _.cloneDeep(GITHUB_SECRET_DATA);
-    let mod2 = _.cloneDeep(OVERRIDE_SECRET_DATA)
-    let config = _.merge(pre_config, mod1, mod2)
-    console.log(config)
+    let mod2 = _.cloneDeep(OVERRIDE_SECRET_DATA);
+    let config = _.merge(pre_config, mod1, mod2);
+    console.log(config);
     return config;
 }
 
-let CONFIG: config = getConfig()
+let CONFIG: config = getConfig();
 
 // function loadConfig() {
 //     let CONFIG: config = _.merge(INTERNAL_CONFIG, GITHUB_SECRET_DATA)
@@ -95,29 +97,29 @@ let CONFIG: config = getConfig()
 //     sheetDataConfig = sheetDataConfig
 // }
 
-let sheetDataConfig: manySheetDataEntries = loadSheetConfig()
+let sheetDataConfig: manySheetDataEntries = loadSheetConfig();
 
 function loadSheetConfig(): manySheetDataEntries {
-    console.log("SheetConfig ran!")
-    CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA),OVERRIDE_SECRET_DATA);
+    console.log("SheetConfig ran!");
+    CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA), OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
         facebookBreakdown: {
             tabName: "facebookPie",
             headerRow: 0,
             allowWrite: true,
-            includeSoftcodedColumns:false,
+            includeSoftcodedColumns: false,
             initialColumnOrder: {
                 areaName: 0,
                 areaEmail: 1,
                 isDuplicate: 2,
                 areaID: 3,
-                combinedNames:4,
+                combinedNames: 4,
                 facebookRefs: 5,
                 breakdownKey: 6,
-                kiDate:7,
+                kiDate: 7,
             }
-            
+
         },
         baptismBreakdown: {
             tabName: "bapPie",
@@ -135,6 +137,46 @@ function loadSheetConfig(): manySheetDataEntries {
                 kiDate: 7,
             }
 
+        },
+        debugStream: {
+            tabName: "DEBUG DATA",
+            headerRow: 0,
+            includeSoftcodedColumns: false,
+            allowWrite: true,
+            keyNamesToIgnore: [],
+            sheetId: CONFIG.sheetTargets.remoteDebugStream,
+            initialColumnOrder: {
+                triggerType: 0,
+                timeStarted: 1,
+                timeEnded: 2,
+                commit_sha: 3,
+                action_event_name: 4,
+                github_actor: 5,
+                job_id: 6,
+                github_repository: 7,
+                github_branch_ref: 8,
+                executionCounter: 9,
+                cycleEndMillis: 10,
+                duration: 11,
+                cycleStartMillis: 12,
+                failures: 13,
+                errors: 14,
+                shardID: 15,
+                shardInstanceID: 16,
+                debugLogData: 17,
+            },
+        },
+        debugLT: {
+            tabName: "Debug-Condensed",
+            headerRow: 0,
+            includeSoftcodedColumns: true,
+            allowWrite: true,
+            keyNamesToIgnore: [],
+            sheetId: CONFIG.sheetTargets.remoteDebugLong,
+            initialColumnOrder: {
+
+
+            },
         },
         localData: {
             tabName: "Data",
@@ -341,7 +383,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 "fb-ref-st-eng": 16,
                 "fb-ref-st-spa": 17,
                 "fb-ref-sum": 18,
-                isDuplicate:19,
+                isDuplicate: 19,
             },
         },
         remoteData: {
