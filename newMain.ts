@@ -18,17 +18,27 @@ function splitByDateTester() {
     let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
     let debugFlow: SheetData = allSheetData.debugStream
     let debugLogData: SheetData = allSheetData.debugLT
+    let outData : kiDataEntry[] = []
     
     let debugData = new kiDataClass(debugFlow.getData())
     let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
-    let groupedByTime:manyKiDataEntries = debugData.groupByTime("timeSeriesKey", timeGranularities.hour)
-
+    let groupedByTime:manyKiDataEntries = debugData.groupByTime("timeStarted", timeGranularities.hour)
+    let keysToKeep = ["timeStarted", "commit_sha", "triggerType",	"github_branch_ref"]
+    let keysToLumpBy = ["commit_sha", "triggerType", "github_branch_ref"]
+    let keysToAggregate = ["baseFunction"]
+    let shardKey = "shardInstanceID"
+        
     console.log(groupedByTime)
     for (let dataset in groupedByTime) {
         let intermediaryKIData = new kiDataClass(groupedByTime[dataset])
         console.log(intermediaryKIData.data)
+        intermediaryKIData.dataLumper(keysToKeep, keysToLumpBy, keysToAggregate, shardKey)
+        let outtie:kiDataEntry[] = intermediaryKIData.end
+        outData.push(...outtie)
+
         
     }
+    debugLogData.insertData(outData)
     console.log("Completed without crashing!  That's nice.")
 }
 
