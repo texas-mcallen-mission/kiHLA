@@ -22,7 +22,8 @@ function splitByDateTester() {
     
     let debugData = new kiDataClass(debugFlow.getData())
     let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
-    let groupedByTime:manyKiDataEntries = debugData.groupByTime("timeStarted", timeGranularities.hour)
+    let groupedByTime: manyKiDataEntries = debugData.groupByTime("timeStarted", timeGranularities.hour)
+    
     let keysToKeep = ["timeStarted", "commit_sha", "triggerType",	"github_branch_ref"]
     let keysToLumpBy = ["commit_sha", "triggerType", "github_branch_ref"]
     let keysToAggregate = ["baseFunction"]
