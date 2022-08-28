@@ -139,7 +139,7 @@ function loadSheetConfig(): manySheetDataEntries {
 
         },
         debugStream: {
-            tabName: "DEBUG DATA",
+            tabName: "DEBUG SHEET",
             headerRow: 0,
             includeSoftcodedColumns: false,
             allowWrite: true,
