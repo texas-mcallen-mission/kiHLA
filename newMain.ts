@@ -13,6 +13,25 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+function splitByDateTester() {
+    loadConfigs();
+    let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
+    let debugFlow: SheetData = allSheetData.debugStream
+    let debugLogData: SheetData = allSheetData.debugLT
+    
+    let debugData = new kiDataClass(debugFlow.getData())
+    let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
+    let groupedByTime:manyKiDataEntries = debugData.groupByTime("timeSeriesKey", timeGranularities.hour)
+
+    console.log(groupedByTime)
+    for (let dataset in groupedByTime) {
+        let intermediaryKIData = new kiDataClass(groupedByTime[dataset])
+        console.log(intermediaryKIData.data)
+        
+    }
+    console.log("Completed without crashing!  That's nice.")
+}
+
 function testBattery() {
     loadConfigs()
     let startTime = new Date();
