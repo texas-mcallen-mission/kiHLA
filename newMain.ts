@@ -24,8 +24,8 @@ function splitByDateTester() {
     let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
     let groupedByTime: manyKiDataEntries = debugData.groupByTime("timeStarted", timeGranularities.hour)
     
-    let keysToKeep = ["timeStarted", "commit_sha", "triggerType",	"github_branch_ref"]
-    let keysToLumpBy = ["commit_sha", "triggerType", "github_branch_ref"]
+    // let keysToKeep = ["timeStarted", "commit_sha", "triggerType",	"github_branch_ref"]
+    let keysToLumpBy = ["github_branch_ref", "commit_sha", "triggerType", "timeStarted"]
     let keysToAggregate = ["baseFunction"]
     let shardKey = "shardInstanceID"
         
@@ -33,7 +33,8 @@ function splitByDateTester() {
     for (let dataset in groupedByTime) {
         let intermediaryKIData = new kiDataClass(groupedByTime[dataset])
         console.log(intermediaryKIData.data)
-        intermediaryKIData.dataLumper(keysToKeep, keysToLumpBy, keysToAggregate, shardKey)
+        intermediaryKIData.dataLumper(keysToLumpBy, keysToAggregate, shardKey)
+        console.log(intermediaryKIData)
         let outtie:kiDataEntry[] = intermediaryKIData.end
         outData.push(...outtie)
 
