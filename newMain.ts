@@ -13,6 +13,27 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEntry) {
+    let targetValue = value[keySet[0]]
+    if (keySet.length == 1) {
+        if (!targetObj.hasOwnProperty(targetValue)) {
+            targetObj[targetValue] = []
+        }
+        targetObj[targetValue].push(value);
+    } else {
+        if (!targetObj.hasOwnProperty(targetValue)) {
+            targetObj[targetValue] = {}
+        }
+        targetObj[targetValue].assign()
+        keySet.shift()
+        
+        appendArrayToObjWithKeyset(keySet, targetObj[targetValue], value)
+    }
+    console.log(keySet)
+
+    
+    
+}
 function splitByDateTester() {
     loadConfigs();
     let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
@@ -31,6 +52,15 @@ function splitByDateTester() {
     let shardKey = "shardInstanceID"
 
     console.log(debugData.end)
+
+    let groupedData = {}
+
+    for (let entry of inData) {
+        appendArrayToObjWithKeyset(keysToLumpBy, groupedData, entry)
+    }
+    console.log(groupedData)
+
+
     
         
     // console.log(groupedByTime)
