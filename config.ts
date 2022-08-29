@@ -224,8 +224,8 @@ function loadSheetConfig(): manySheetDataEntries {
                 'feedback-analysis': 72,
                 'fb-ref-st-eng': 73,
                 'fb-ref-st-spa': 74,
-
-
+                'fb-ref-sum': 75,
+                'rrPercent': 76,
             },
         },
         localForms: {
