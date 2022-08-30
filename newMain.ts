@@ -1,4 +1,4 @@
-function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
+function _constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     let allSheetData: manySheetDatas = {};
     let keys: string[] = ["Constructed SheetData objects for:"];
     for (let key in target) {
@@ -13,7 +13,7 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
-function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEntry) {
+function _appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEntry) {
     let targetValue = value[keySet[0]]
     if (keySet.length == 1) {
         if (!targetObj.hasOwnProperty(targetValue)) {
@@ -28,15 +28,15 @@ function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEnt
         // targetObj[targetValue].assign()
         keySet.shift()
         
-        appendArrayToObjWithKeyset(keySet, targetObj[targetValue], value)
+        _appendArrayToObjWithKeyset(keySet, targetObj[targetValue], value)
     }
-    console.log(keySet)
+    // console.log(keySet) // this creates a TON of spam...
 
     
     
 }
 
-function aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
+function _aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
     let outData: kiDataEntry[] = dataPassthrough;
     // inputObject.getIndex;
     if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
@@ -54,35 +54,30 @@ function aggregateData(depthLevels: number /*Length of the keysToAggregate objec
                     subEntry[targetKeyString] = 0;
                 }
                 subEntry[targetKeyString] += 1;
-
             }
-
         }
-
         for (let keeper of keysToKeep) {
             subEntry[keeper] = inputObject[0][keeper];
         }
-
         outData.push(subEntry);
     } else {
         for (let key in inputObject) {
-            aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
+            _aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
         }
     }
-
-
     return outData;
 }
 
 function splitByDateTester() {
     loadConfigs();
-    let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
+    let allSheetData: manySheetDatas = _constructSheetDataV2(sheetDataConfig);
     let debugFlow: SheetData = allSheetData.debugStream
     let debugLogData: SheetData = allSheetData.debugLT
     let outData : kiDataEntry[] = []
     
     let debugData = new kiDataClass(debugFlow.getData())
     let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
+    
     debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour)
     let inData = debugData.end
     
@@ -91,7 +86,7 @@ function splitByDateTester() {
     let keysToAggregate = ["baseFunction"]
     let shardKey = "shardInstanceID"
 
-    console.log(debugData.end)
+    // console.log(debugData.end)
 
     let groupedData = {}
     // Step One: Get the data into an aggregatable form: This is essentially a sorting operation.
@@ -109,16 +104,34 @@ function splitByDateTester() {
     */
     
     for (let entry of inData) {
-        appendArrayToObjWithKeyset([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
+        _appendArrayToObjWithKeyset([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
     }
     // Step Two: Take the grouped up data and aggregate it.  WHEEE
 
     // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
     console.log(groupedData)
     let allKeysToKeep = [...keysToAggregate,...keysToLumpBy,...keysToKeep]
-    let aggData:kiDataEntry[] = aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
+    let aggData:kiDataEntry[] = _aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
 
-    console.log(aggData)
+    // console.log(aggData)
+
+    // Step Three: Take the aggregated data and add keys to everything that doesn't exist already.
+
+    let keys = [...allKeysToKeep]
+    for (let entry of aggData) {
+        for (let key in entry) {
+            if (!keys.includes(entry[key])) {
+                keys.push(entry[key])
+            }
+            
+        }
+    }
+    console.log(keys)
+    
+    debugLogData.addKeysFromArray(keys)
+    // debugLogData
+
+
     
 
     
@@ -162,7 +175,7 @@ function testBattery() {
 
 function updateLocalDataStore() {
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
     let data = allSheetData.remoteData.getData();
@@ -180,7 +193,7 @@ function updateLocalDataStore() {
 
 function testSyncDataFlowCols() {
     loadConfigs()
-    let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
+    let allSheetData: manySheetDatas = _constructSheetDataV2(sheetDataConfig);
     allSheetData.localData.addKeys(allSheetData.form);
 
 
@@ -194,7 +207,7 @@ function testSyncDataFlowCols() {
 function updateTMMReport() {
     loadConfigs()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
     // sheetDataConfig.remote.
     let kicData = new kiDataClass( allSheetData.localData.getData())
 
@@ -212,7 +225,7 @@ function updateTMMReport() {
 function updateTechSquadReport() {
     // loadConfig()
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
     
     let dataSheet = allSheetData.localData;
 
@@ -232,7 +245,7 @@ function updateTechSquadReport() {
 function createFBpieChart() {
 
     loadConfigs();
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -254,7 +267,7 @@ function createFBpieChart() {
 function createBapChart() {
     
     loadConfigs();
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -276,7 +289,7 @@ function createBapChart() {
 
 function updateServiceRepReport() {
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = _constructSheetDataV2(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
     let dataSheet = allSheetData.localData;
