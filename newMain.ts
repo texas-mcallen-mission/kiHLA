@@ -1,4 +1,4 @@
-function _constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
+function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     let allSheetData: manySheetDatas = {};
     let keys: string[] = ["Constructed SheetData objects for:"];
     for (let key in target) {
@@ -13,7 +13,7 @@ function _constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
-function _appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEntry) {
+function appendArrayToObjWithKeyset_(keySet: string[], targetObj, value:kiDataEntry) {
     let targetValue = value[keySet[0]]
     if (keySet.length == 1) {
         if (!targetObj.hasOwnProperty(targetValue)) {
@@ -28,7 +28,7 @@ function _appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEn
         // targetObj[targetValue].assign()
         keySet.shift()
         
-        _appendArrayToObjWithKeyset(keySet, targetObj[targetValue], value)
+        appendArrayToObjWithKeyset_(keySet, targetObj[targetValue], value)
     }
     // console.log(keySet) // this creates a TON of spam...
 
@@ -36,7 +36,7 @@ function _appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEn
     
 }
 
-function _aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
+function aggregateData_(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
     let outData: kiDataEntry[] = dataPassthrough;
     // inputObject.getIndex;
     if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
@@ -62,7 +62,7 @@ function _aggregateData(depthLevels: number /*Length of the keysToAggregate obje
         outData.push(subEntry);
     } else {
         for (let key in inputObject) {
-            _aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
+            aggregateData_(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
         }
     }
     return outData;
@@ -70,7 +70,7 @@ function _aggregateData(depthLevels: number /*Length of the keysToAggregate obje
 
 function splitByDateTester() {
     loadConfigs();
-    let allSheetData: manySheetDatas = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
     let debugFlow: SheetData = allSheetData.debugStream
     let debugLogData: SheetData = allSheetData.debugLT
     let outData : kiDataEntry[] = []
@@ -104,14 +104,14 @@ function splitByDateTester() {
     */
     
     for (let entry of inData) {
-        _appendArrayToObjWithKeyset([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
+        appendArrayToObjWithKeyset_([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
     }
     // Step Two: Take the grouped up data and aggregate it.  WHEEE
 
     // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
     console.log(groupedData)
     let allKeysToKeep = [...keysToAggregate,...keysToLumpBy,...keysToKeep]
-    let aggData:kiDataEntry[] = _aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
+    let aggData:kiDataEntry[] = aggregateData_(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
 
     // console.log(aggData)
 
@@ -175,7 +175,7 @@ function testBattery() {
 
 function updateLocalDataStore() {
     loadConfigs()
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
     let data = allSheetData.remoteData.getData();
@@ -193,7 +193,7 @@ function updateLocalDataStore() {
 
 function testSyncDataFlowCols() {
     loadConfigs()
-    let allSheetData: manySheetDatas = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
     allSheetData.localData.addKeys(allSheetData.form);
 
 
@@ -207,7 +207,7 @@ function testSyncDataFlowCols() {
 function updateTMMReport() {
     loadConfigs()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // sheetDataConfig.remote.
     let kicData = new kiDataClass( allSheetData.localData.getData())
 
@@ -225,7 +225,7 @@ function updateTMMReport() {
 function updateTechSquadReport() {
     // loadConfig()
     loadConfigs()
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     
     let dataSheet = allSheetData.localData;
 
@@ -245,7 +245,7 @@ function updateTechSquadReport() {
 function createFBpieChart() {
 
     loadConfigs();
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -267,7 +267,7 @@ function createFBpieChart() {
 function createBapChart() {
     
     loadConfigs();
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -289,7 +289,7 @@ function createBapChart() {
 
 function updateServiceRepReport() {
     loadConfigs()
-    let allSheetData = _constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
     let dataSheet = allSheetData.localData;
