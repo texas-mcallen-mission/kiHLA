@@ -36,7 +36,11 @@ function appendArrayToObjWithKeyset_(keySet: string[], targetObj, value:kiDataEn
     
 }
 
-function aggregateData_(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
+interface aggDataReturn {
+    data: kiDataEntry,
+    newKeys:string[]
+}
+function aggregateData_(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string, newKeys: string[]): aggDataReturn {
     let outData: kiDataEntry[] = dataPassthrough;
     // inputObject.getIndex;
     if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
@@ -52,6 +56,7 @@ function aggregateData_(depthLevels: number /*Length of the keysToAggregate obje
                 }
                 if (!subEntry.hasOwnProperty(targetKeyString)) {
                     subEntry[targetKeyString] = 0;
+                    keysToKeep.push(targetKeyString)
                 }
                 subEntry[targetKeyString] += 1;
             }
@@ -62,10 +67,10 @@ function aggregateData_(depthLevels: number /*Length of the keysToAggregate obje
         outData.push(subEntry);
     } else {
         for (let key in inputObject) {
-            aggregateData_(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
+            aggregateData_(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey,keysToKeep);
         }
     }
-    return outData;
+    return { data: outData, newKeys: newKeys };
 }
 
 function splitByDateTester() {
@@ -110,25 +115,29 @@ function splitByDateTester() {
 
     // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
     console.log(groupedData)
-    let allKeysToKeep = [...keysToAggregate,...keysToLumpBy,...keysToKeep]
-    let aggData:kiDataEntry[] = aggregateData_(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
-
+    let allKeysToKeep = [...keysToAggregate, ...keysToLumpBy, ...keysToKeep]
+    let newKeys:string[] = []
+    let aggDataOut = aggregateData_(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey,newKeys)
+    let aggData = aggDataOut.data
     // console.log(aggData)
 
     // Step Three: Take the aggregated data and add keys to everything that doesn't exist already.
 
-    let keys = [...allKeysToKeep]
-    for (let entry of aggData) {
-        for (let key in entry) {
-            if (!keys.includes(entry[key])) {
-                keys.push(entry[key])
-            }
+    // let keys = [...allKeysToKeep]
+    // for (let entry of aggData) {
+    //     for (let key in entry) {
+    //         if (!keys.includes(entry[key])) {
+    //             keys.push(entry[key])
+    //         }
             
-        }
+    //     }
+    // }
+    console.log(aggDataOut.newKeys)
+    if (newKeys == aggDataOut.newKeys) {
+        console.error("mutated newKeys object!")
     }
-    console.log(keys)
     
-    debugLogData.addKeysFromArray(keys)
+    debugLogData.addKeysFromArray(aggDataOut.newKeys)
     // debugLogData
 
 
