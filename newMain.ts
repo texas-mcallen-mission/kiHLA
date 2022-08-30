@@ -36,32 +36,37 @@ function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEnt
     
 }
 
-function aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[]): kiDataEntry[] {
+function aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string): kiDataEntry[] {
     let outData: kiDataEntry[] = dataPassthrough;
     // inputObject.getIndex;
     if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
         let subEntry = {};
-        for (let key in inputObject) {
+        //@ts-ignore - I don't know how to properly define a recursive thing- by the time you get to this execution branch it should be guaranteed to be an array of objects.
+        for (let key of inputObject) {
             // aggregation code
-            for (let entry of inputObject[key]) {
-                for (let aggKey in keysToAggregate) {
-                    if (!subEntry.hasOwnProperty(aggKey)) {
-                        subEntry[aggKey] = 0;
-                    }
-                    subEntry[aggKey] += 1;
-
+            // for (let entry of inputObject[key]) {
+            for (let aggKey of keysToAggregate) {
+                let targetKeyString = key[aggKey];
+                if (subEntry.hasOwnProperty(shardKey) && subEntry[shardKey] != "") {
+                    targetKeyString += subEntry[shardKey];
                 }
+                if (!subEntry.hasOwnProperty(targetKeyString)) {
+                    subEntry[targetKeyString] = 0;
+                }
+                subEntry[targetKeyString] += 1;
 
             }
-            for (let keeper in keysToKeep) {
-                subEntry[keeper] = inputObject[key][0];
-            }
-            
+
         }
+
+        for (let keeper of keysToKeep) {
+            subEntry[keeper] = inputObject[0][keeper];
+        }
+
         outData.push(subEntry);
     } else {
         for (let key in inputObject) {
-            aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep);
+            aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey);
         }
     }
 
@@ -111,7 +116,7 @@ function splitByDateTester() {
     // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
     console.log(groupedData)
     let allKeysToKeep = [...keysToAggregate,...keysToLumpBy,...keysToKeep]
-    let aggData:kiDataEntry[] = aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep)
+    let aggData:kiDataEntry[] = aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey)
 
     console.log(aggData)
     

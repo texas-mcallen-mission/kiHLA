@@ -176,7 +176,12 @@ function loadSheetConfig(): manySheetDataEntries {
             keyNamesToIgnore: [],
             sheetId: CONFIG.sheetTargets.remoteDebugLong,
             initialColumnOrder: {
-
+                "github_branch_ref": 0,
+                "github_branch_ref": 1,
+                "commit_sha": 2,
+                "triggerType": 3,
+                "hourBucket": 4,
+                "baseFunction": 5,
 
             },
         },
