@@ -25,7 +25,7 @@ function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEnt
         if (!targetObj.hasOwnProperty(targetValue)) {
             targetObj[targetValue] = {}
         }
-        targetObj[targetValue].assign()
+        // targetObj[targetValue].assign()
         keySet.shift()
         
         appendArrayToObjWithKeyset(keySet, targetObj[targetValue], value)
@@ -36,35 +36,37 @@ function appendArrayToObjWithKeyset(keySet: string[], targetObj, value:kiDataEnt
     
 }
 
-function aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[],keysToAggregate:string[],keysToKeep:string[]): kiDataEntry[]{
-    let outData:kiDataEntry[] = dataPassthrough
-
-    for (let key in inputObject) {
-        if (depthLevels == 1) { // this should get me to the level of kiDataEntry[], I *think*.
+function aggregateData(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[]): kiDataEntry[] {
+    let outData: kiDataEntry[] = dataPassthrough;
+    // inputObject.getIndex;
+    if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
+        let subEntry = {};
+        for (let key in inputObject) {
             // aggregation code
-            let subEntry = {}
             for (let entry of inputObject[key]) {
                 for (let aggKey in keysToAggregate) {
                     if (!subEntry.hasOwnProperty(aggKey)) {
-                        subEntry[aggKey] = 0
+                        subEntry[aggKey] = 0;
                     }
-                    subEntry[aggKey] += 1
-                    
+                    subEntry[aggKey] += 1;
+
                 }
-                
+
             }
             for (let keeper in keysToKeep) {
-                subEntry[keeper] = inputObject[key][0]
+                subEntry[keeper] = inputObject[key][0];
             }
-            outData.push(subEntry)
-
-        } else {
-            return aggregateData(depthLevels-1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough,keysToAggregate,keysToKeep)
+            
+        }
+        outData.push(subEntry);
+    } else {
+        for (let key in inputObject) {
+            aggregateData(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep);
         }
     }
-    
 
-    return outData
+
+    return outData;
 }
 
 function splitByDateTester() {
@@ -87,13 +89,26 @@ function splitByDateTester() {
     console.log(debugData.end)
 
     let groupedData = {}
+    // Step One: Get the data into an aggregatable form: This is essentially a sorting operation.
+    // returns a structure like this:
+    /*
+        {
+            timeStarted1: {
+                github_branch_ref1: {commit_sha1:{triggerType1:{hourBucket1:[kiDataEntries]},
+                github_branch_ref2: {commit_sha2:{triggerType1:{hourBucket2:[kiDataEntries]},
+                                                {triggerType2:{hourBucket3:[kiDataEntries]}
+        }
 
+
+
+    */
+    
     for (let entry of inData) {
         appendArrayToObjWithKeyset([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
     }
     // Step Two: Take the grouped up data and aggregate it.  WHEEE
 
-    // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?
+    // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
     console.log(groupedData)
     let allKeysToKeep = [...keysToAggregate,...keysToLumpBy,...keysToKeep]
     let aggData:kiDataEntry[] = aggregateData(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep)
