@@ -36,10 +36,7 @@ function appendArrayToObjWithKeyset_(keySet: string[], targetObj, value:kiDataEn
     
 }
 
-interface aggDataReturn {
-    data: kiDataEntry,
-    newKeys:string[]
-}
+
 function aggregateData_(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string, newKeys: string[]): aggDataReturn {
     let outData: kiDataEntry[] = dataPassthrough;
     // inputObject.getIndex;
@@ -73,6 +70,35 @@ function aggregateData_(depthLevels: number /*Length of the keysToAggregate obje
     return { data: outData, newKeys: newKeys };
 }
 
+
+function testKiSplitter() {
+    loadConfigs();
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
+    let debugFlow: SheetData = allSheetData.debugStream;
+    let debugLogData: SheetData = allSheetData.debugLT;
+    // let outData: kiDataEntry[] = [];
+
+    let lastRow = debugFlow.getValues().length; // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
+    let debugData = new kiDataClass(debugFlow.getData());
+
+    debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour);
+    let inData = debugData.end;
+
+    let keysToKeep = ["timeStarted", "commit_sha", "triggerType", "github_branch_ref"];
+    let keysToLumpBy = ["github_branch_ref", "commit_sha", "triggerType", "hourBucket"];
+    let keysToAggregate = ["baseFunction"];
+    let shardKey = "shardInstanceID";
+
+    debugData.aggregateByKeys(keysToLumpBy, keysToKeep, keysToAggregate, shardKey)
+    debugLogData.addKeysFromArray(debugData.keys)
+
+    debugLogData.insertData(debugData.end);
+    
+    // Step Last:  Delete old entries.
+    debugFlow.clearRows(lastRow)
+    console.log("Completed without crashing!  That's nice.")
+    
+}
 function splitByDateTester() {
     loadConfigs();
     let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
@@ -123,39 +149,14 @@ function splitByDateTester() {
 
     // Step Three: Take the aggregated data and add keys to everything that doesn't exist already.
 
-    // let keys = [...allKeysToKeep]
-    // for (let entry of aggData) {
-    //     for (let key in entry) {
-    //         if (!keys.includes(entry[key])) {
-    //             keys.push(entry[key])
-    //         }
-            
-    //     }
-    // }
     console.log(aggDataOut.newKeys)
     if (newKeys == aggDataOut.newKeys) {
         console.error("mutated newKeys object!")
     }
     
     debugLogData.addKeysFromArray(aggDataOut.newKeys)
-    // debugLogData
 
 
-    
-
-    
-        
-    // console.log(groupedByTime)
-    // for (let dataset in groupedByTime) {
-    //     let intermediaryKIData = new kiDataClass(groupedByTime[dataset])
-    //     console.log(intermediaryKIData.data)
-    //     intermediaryKIData.dataLumper(keysToLumpBy, keysToAggregate, shardKey)
-    //     console.log(intermediaryKIData)
-    //     let outtie:kiDataEntry[] = intermediaryKIData.end
-    //     outData.push(...outtie)
-
-        
-    // }
     debugLogData.insertData(outData)
     console.log("Completed without crashing!  That's nice.")
 }
