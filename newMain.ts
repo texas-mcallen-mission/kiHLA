@@ -1,4 +1,4 @@
-function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
+function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     let allSheetData: manySheetDatas = {};
     let keys: string[] = ["Constructed SheetData objects for:"];
     for (let key in target) {
@@ -13,6 +13,40 @@ function constructSheetDataV2(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+
+function aggregateDebugData() {
+    // Step 0: Load everything up.
+    loadConfigs();
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
+    let debugFlow: SheetData = allSheetData.debugStream;
+    let debugLogData: SheetData = allSheetData.debugLT;
+    // let outData: kiDataEntry[] = [];
+    // Step 1: Get the last row of the data so that we know how far we went.  Then, load the data.
+    let lastRow = debugFlow.getValues().length; // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
+    let debugData = new kiDataClass(debugFlow.getData());
+
+    // Step 2: Calculate hour buckets to group data with.
+    debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour);
+    let inData = debugData.end;
+
+    // This is essentially configuration for what things we want to aggregate with.
+    let keysToKeep = ["timeStarted", "commit_sha", "triggerType", "github_branch_ref"];
+    let keysToLumpBy = ["github_branch_ref", "commit_sha", "triggerType", "hourBucket"];
+    let keysToAggregate = ["baseFunction"];
+    let shardKey = "shardInstanceID";
+
+    // Step 3: aggregate the data, then add the new keys to the sheetData object.
+    debugData.aggregateByKeys(keysToLumpBy, keysToKeep, keysToAggregate, shardKey)
+    debugLogData.addKeysFromArray(debugData.newKeys)
+    // Step 4: add the data to the sheet.
+    debugLogData.insertData(debugData.end);
+    
+    // Step Last:  Delete old entries.
+    debugFlow.clearRows(lastRow)
+    console.log("Completed without crashing!  That's nice.")
+    
+}
+
 function testBattery() {
     loadConfigs()
     let startTime = new Date();
@@ -25,6 +59,7 @@ function testBattery() {
         updateData: updateLocalDataStore,
         updateFBpie: createFBpieChart,
         updateBapPie: createBapChart,
+        cleanDebugLog:aggregateDebugData,
     };
     for (let entry in tests) {
         let test = tests[entry];
@@ -37,7 +72,7 @@ function testBattery() {
 
 function updateLocalDataStore() {
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetData);
     // let dataSource = remoteSheetData.remoteData;
     let data = allSheetData.remoteData.getData();
@@ -55,7 +90,7 @@ function updateLocalDataStore() {
 
 function testSyncDataFlowCols() {
     loadConfigs()
-    let allSheetData: manySheetDatas = constructSheetDataV2(sheetDataConfig);
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
     allSheetData.localData.addKeys(allSheetData.form);
 
 
@@ -69,7 +104,7 @@ function testSyncDataFlowCols() {
 function updateTMMReport() {
     loadConfigs()
     // let localSheetData = constructSheetDataV2(sheetDataConfig.local);
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // sheetDataConfig.remote.
     let kicData = new kiDataClass( allSheetData.localData.getData())
 
@@ -87,7 +122,7 @@ function updateTMMReport() {
 function updateTechSquadReport() {
     // loadConfig()
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     
     let dataSheet = allSheetData.localData;
 
@@ -107,7 +142,7 @@ function updateTechSquadReport() {
 function createFBpieChart() {
 
     loadConfigs();
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -129,7 +164,7 @@ function createFBpieChart() {
 function createBapChart() {
     
     loadConfigs();
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
 
     let dataSheet = allSheetData.localData;
 
@@ -151,7 +186,7 @@ function createBapChart() {
 
 function updateServiceRepReport() {
     loadConfigs()
-    let allSheetData = constructSheetDataV2(sheetDataConfig);
+    let allSheetData = constructSheetDataV2_(sheetDataConfig);
     // let remoteSheetData = constructSheetDataV2(sheetDataConfig.remote);
 
     let dataSheet = allSheetData.localData;
