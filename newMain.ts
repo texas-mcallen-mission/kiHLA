@@ -90,7 +90,7 @@ function testKiSplitter() {
     let shardKey = "shardInstanceID";
 
     debugData.aggregateByKeys(keysToLumpBy, keysToKeep, keysToAggregate, shardKey)
-    debugLogData.addKeysFromArray(debugData.keys)
+    debugLogData.addKeysFromArray(debugData.newKeys)
 
     debugLogData.insertData(debugData.end);
     
