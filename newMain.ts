@@ -59,6 +59,7 @@ function testBattery() {
         updateData: updateLocalDataStore,
         updateFBpie: createFBpieChart,
         updateBapPie: createBapChart,
+        cleanDebugLog:aggregateDebugData,
     };
     for (let entry in tests) {
         let test = tests[entry];
