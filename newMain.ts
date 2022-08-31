@@ -13,152 +13,38 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
-function appendArrayToObjWithKeyset_(keySet: string[], targetObj, value:kiDataEntry) {
-    let targetValue = value[keySet[0]]
-    if (keySet.length == 1) {
-        if (!targetObj.hasOwnProperty(targetValue)) {
-            targetObj[targetValue] = []
-            // Theoretically I could stick the Aggregation functions in here...
-        }
-        targetObj[targetValue].push(value);
-    } else {
-        if (!targetObj.hasOwnProperty(targetValue)) {
-            targetObj[targetValue] = {}
-        }
-        // targetObj[targetValue].assign()
-        keySet.shift()
-        
-        appendArrayToObjWithKeyset_(keySet, targetObj[targetValue], value)
-    }
-    // console.log(keySet) // this creates a TON of spam...
 
-    
-    
-}
-
-
-function aggregateData_(depthLevels: number /*Length of the keysToAggregate object */, inputObject: {}, dataPassthrough: kiDataEntry[], keysToAggregate: string[], keysToKeep: string[], shardKey: string, newKeys: string[]): aggDataReturn {
-    let outData: kiDataEntry[] = dataPassthrough;
-    // inputObject.getIndex;
-    if (depthLevels == 0) { // this should get me to the level of kiDataEntry[], I *think*.
-        let subEntry = {};
-        //@ts-ignore - I don't know how to properly define a recursive thing- by the time you get to this execution branch it should be guaranteed to be an array of objects.
-        for (let key of inputObject) {
-            // aggregation code
-            // for (let entry of inputObject[key]) {
-            for (let aggKey of keysToAggregate) {
-                let targetKeyString = key[aggKey];
-                if (subEntry.hasOwnProperty(shardKey) && subEntry[shardKey] != "") {
-                    targetKeyString += subEntry[shardKey];
-                }
-                if (!subEntry.hasOwnProperty(targetKeyString)) {
-                    subEntry[targetKeyString] = 0;
-                    keysToKeep.push(targetKeyString)
-                }
-                subEntry[targetKeyString] += 1;
-            }
-        }
-        for (let keeper of keysToKeep) {
-            subEntry[keeper] = inputObject[0][keeper];
-        }
-        outData.push(subEntry);
-    } else {
-        for (let key in inputObject) {
-            aggregateData_(depthLevels - 1, inputObject[key]/* This lets me target one layer into the inputObject every time. */, dataPassthrough, keysToAggregate, keysToKeep, shardKey,keysToKeep);
-        }
-    }
-    return { data: outData, newKeys: newKeys };
-}
-
-
-function testKiSplitter() {
+function aggregateDebugData() {
+    // Step 0: Load everything up.
     loadConfigs();
     let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
     let debugFlow: SheetData = allSheetData.debugStream;
     let debugLogData: SheetData = allSheetData.debugLT;
     // let outData: kiDataEntry[] = [];
-
+    // Step 1: Get the last row of the data so that we know how far we went.  Then, load the data.
     let lastRow = debugFlow.getValues().length; // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
     let debugData = new kiDataClass(debugFlow.getData());
 
+    // Step 2: Calculate hour buckets to group data with.
     debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour);
     let inData = debugData.end;
 
+    // This is essentially configuration for what things we want to aggregate with.
     let keysToKeep = ["timeStarted", "commit_sha", "triggerType", "github_branch_ref"];
     let keysToLumpBy = ["github_branch_ref", "commit_sha", "triggerType", "hourBucket"];
     let keysToAggregate = ["baseFunction"];
     let shardKey = "shardInstanceID";
 
+    // Step 3: aggregate the data, then add the new keys to the sheetData object.
     debugData.aggregateByKeys(keysToLumpBy, keysToKeep, keysToAggregate, shardKey)
     debugLogData.addKeysFromArray(debugData.newKeys)
-
+    // Step 4: add the data to the sheet.
     debugLogData.insertData(debugData.end);
     
     // Step Last:  Delete old entries.
     // debugFlow.clearRows(lastRow)
     console.log("Completed without crashing!  That's nice.")
     
-}
-function splitByDateTester() {
-    loadConfigs();
-    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig);
-    let debugFlow: SheetData = allSheetData.debugStream
-    let debugLogData: SheetData = allSheetData.debugLT
-    let outData : kiDataEntry[] = []
-    
-    let debugData = new kiDataClass(debugFlow.getData())
-    let lastRow = debugFlow.getValues().length // stored so we can delete old data upon completion.  (Should require a config option to do that tho)
-    
-    debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour)
-    let inData = debugData.end
-    
-    let keysToKeep = ["timeStarted", "commit_sha", "triggerType",	"github_branch_ref"]
-    let keysToLumpBy = ["github_branch_ref", "commit_sha", "triggerType", "hourBucket"]
-    let keysToAggregate = ["baseFunction"]
-    let shardKey = "shardInstanceID"
-
-    // console.log(debugData.end)
-
-    let groupedData = {}
-    // Step One: Get the data into an aggregatable form: This is essentially a sorting operation.
-    // returns a structure like this:
-    /*
-        {
-            timeStarted1: {
-                github_branch_ref1: {commit_sha1:{triggerType1:{hourBucket1:[kiDataEntries]},
-                github_branch_ref2: {commit_sha2:{triggerType1:{hourBucket2:[kiDataEntries]},
-                                                {triggerType2:{hourBucket3:[kiDataEntries]}
-        }
-
-
-
-    */
-    
-    for (let entry of inData) {
-        appendArrayToObjWithKeyset_([...keysToLumpBy], groupedData, entry) // Had to use a spread operator to make a copy of the keysToLumpBy object.
-    }
-    // Step Two: Take the grouped up data and aggregate it.  WHEEE
-
-    // BTW: this is absolutely the most ridiculous thing I've written in a while, and is probably not super duper robust?  Legit
-    console.log(groupedData)
-    let allKeysToKeep = [...keysToAggregate, ...keysToLumpBy, ...keysToKeep]
-    let newKeys:string[] = []
-    let aggDataOut = aggregateData_(keysToLumpBy.length, groupedData, [], keysToAggregate, allKeysToKeep,shardKey,newKeys)
-    let aggData = aggDataOut.data
-    // console.log(aggData)
-
-    // Step Three: Take the aggregated data and add keys to everything that doesn't exist already.
-
-    console.log(aggDataOut.newKeys)
-    if (newKeys == aggDataOut.newKeys) {
-        console.error("mutated newKeys object!")
-    }
-    
-    debugLogData.addKeysFromArray(aggDataOut.newKeys)
-
-
-    debugLogData.insertData(outData)
-    console.log("Completed without crashing!  That's nice.")
 }
 
 function testBattery() {
