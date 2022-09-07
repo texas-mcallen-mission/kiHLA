@@ -111,7 +111,8 @@ function loadSheetConfig(): manySheetDataEntries {
             allowWrite: true,
             includeSoftcodedColumns:true,
             initialColumnOrder: {
-                areaName: 0,
+                missionary:0,
+                areaName: 24,
                 log: 1,
                 areaEmail: 2,
                 isDuplicate: 3,

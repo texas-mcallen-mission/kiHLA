@@ -23,25 +23,30 @@ function splitByMissionaryTesting(){
 
     let kiData = new kiDataClass(kiSheetData.getData())
     
-    //Because I'm using github.dev, I can't load sheetCore to make modifications to it :(
-    let kiDataObj = kiData.end
+    let kiDataObj = kiData
     let outData:kiDataEntry[] = []
-    let targetKeys = ["missionary1","missionary2","missionary3"]
+    let targetKeys = ["name1","name2","name3"]
     let newKeyName = "missionary"
-    for(let entry of kiDataObj){
 
-        for(let key of targetKeys){
-            if(!newEntry[key]=="" && !newEntry[key] == undefined){
-                let newEntry = {...entry}
-                newEntry[newKeyName] = newEntry[key]
-                outData.push(newEntry)
-            }
-        }
-    }
+    let keysToKeep = testKiData.getKeys()
+	
+    kiDataObj.breakdownAnalysis(keysToKeep,targetKeys,newKeyName,true)
+	
+
+    // for(let entry of kiDataObj){
+
+    //     for(let key of targetKeys){
+    //         let newEntry = {...entry}
+    //         if(entry[key]!=""){
+    //             newEntry[newKeyName] = newEntry[key]
+    //             outData.push(newEntry)
+    //         }
+    //     }
+    // }
 
     // send data to display
 
-    testKiData.setValues(outDatas)
+    testKiData.setValues(kiDataObj.end)
     
 }
 
