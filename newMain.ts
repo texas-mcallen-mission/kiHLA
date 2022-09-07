@@ -46,7 +46,7 @@ function splitByMissionaryTesting(){
 
     // send data to display
 
-    testKiData.setValues(kiDataObj.end)
+    testKiData.setData(kiDataObj.end)
     
 }
 
