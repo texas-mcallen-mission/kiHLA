@@ -3,7 +3,7 @@ name: HLA Test Branch
 on:
   workflow_dispatch:
   push:
-    branches: [debug-cleanup]
+    branches: [per-missionary-stats]
   release:
     types: [published]
   schedule:

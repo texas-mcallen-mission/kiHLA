@@ -13,6 +13,14 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+function splitByMissionaryTesting(){
+    // Step 0: Load KI Data, set things up
+    loadConfigs()
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+
+    let kiSheetData = allSheetData.localData
+    let testKiData = 
+}
 
 function aggregateDebugData() {
     // Step 0: Load everything up.

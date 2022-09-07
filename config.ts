@@ -36,7 +36,8 @@ let INTERNAL_CONFIG: config = {
         techSquad: "Hey, this should get set by secrets",
         remoteData: "Hey, this should get set by secrets",
         remoteDebugStream: "Hey, this should get set by secrets",
-        remoteDebugLong: "Hey, this should also get set by secrets."
+        remoteDebugLong: "Hey, this should also get set by secrets.",
+        perMissionary: SpreadsheetApp.getActiveSpreadsheet().getId(),
 
 
     },
@@ -104,6 +105,40 @@ function loadSheetConfig(): manySheetDataEntries {
     CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA), OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
+        perMissionary:{
+            tabName: "perMissionary",
+            headerRow: 8,
+            allowWrite: true,
+            includeSoftcodedColumns:true,
+            initialColumnOrder: {
+                areaName: 0,
+                log: 1,
+                areaEmail: 2,
+                isDuplicate: 3,
+                formTimestamp: 4, //form data
+                areaID: 5,
+                kiDate: 6, //form data
+
+                np: 7, //form data
+                sa: 8, //form data
+                bd: 9, //form data
+                bc: 10, //form data
+                rca: 11, //form data
+                rc: 12, //form data
+                cki: 13, //form data
+                serviceHrs: 14, //form data
+
+                name1: 15,
+                position1: 16,
+                isTrainer1: 17,
+                name2: 18,
+                position2: 19,
+                isTrainer2: 20,
+                name3: 21,
+                position3: 22,
+                isTrainer3: 23, // hello, update!
+            }
+        },
         facebookBreakdown: {
             tabName: "facebookPie",
             headerRow: 0,
