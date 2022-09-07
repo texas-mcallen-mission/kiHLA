@@ -19,7 +19,10 @@ function splitByMissionaryTesting(){
     let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig)
 
     let kiSheetData = allSheetData.localData
-    let testKiData = 
+    let testKiData = allSheetData.perMissionary
+
+    let kiData = new kiDataClass(kiSheetData.getData())
+    
 }
 
 function aggregateDebugData() {
