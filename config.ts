@@ -38,6 +38,7 @@ let INTERNAL_CONFIG: config = {
         remoteDebugStream: "Hey, this should get set by secrets",
         remoteDebugLong: "Hey, this should also get set by secrets.",
         perMissionary: SpreadsheetApp.getActiveSpreadsheet().getId(),
+        perMissionaryAnalysis:SpreadsheetApp.getActiveSpreadsheet().getId(),
 
 
     },
@@ -105,6 +106,61 @@ function loadSheetConfig(): manySheetDataEntries {
     CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA), OVERRIDE_SECRET_DATA);
 
     let sheetDataConfig: manySheetDataEntries = {
+        perMissionaryAnalysis:{
+            tabName:"missionaryAnalysis",
+            headerRow:8,
+            allowWrite:true,
+            includeSoftcodedColumns:true,
+            initialColumnOrder:{
+                missionary:0,
+                areaName:1,
+                areaEmail: 2,
+                isDuplicate: 3,
+                formTimestamp: 4,
+                areaID: 5,
+                kiDate: 6,
+                np: 7,
+                sa: 8,
+                bd: 9,
+                bc: 10,
+                rca: 11,
+                rc: 12,
+                cki: 13,
+                serviceHrs: 14,
+                "bap-self-ref": 15,
+                "bap-street": 16,
+                "bap-ward-activity-or-event": 17,
+                "bap-ref-recent-convert": 18,
+                "bap-ref-part-member": 19,
+                "bap-ref-other-member": 20,
+                "bap-ref-teaching-pool": 21,
+                "bap-ref-other-non-member": 22,
+                "bap-fb-mission": 23,
+                "bap-fb-personal": 24,
+                "bap-family-history": 25,
+                "bap-taught-prev": 26,
+                "fb-role": 27,
+                "fb-ref-rgv-eng": 28,
+                "fb-ref-rgv-spa": 29,
+                "fb-ref-laredo-eng": 30,
+                "fb-ref-laredo-spa": 31,
+                "fb-ref-ysa": 32,
+                "fb-ref-asl": 33,
+                "fb-ref-service": 34,
+                "fb-ref-corpus": 35,
+                "fb-ref-personal": 36,
+                'feedback-general': 37,
+                'feedback-improvement': 38,
+                'feedback-analysis': 39,
+                'fb-ref-st-eng': 40,
+                'fb-ref-st-spa': 41,
+                'fb-ref-sum': 42,
+                'rrPercent': 43,
+                timeBucket:44,
+                //words
+
+            }
+        },
         perMissionary:{
             tabName: "perMissionary",
             headerRow: 8,
@@ -112,32 +168,51 @@ function loadSheetConfig(): manySheetDataEntries {
             includeSoftcodedColumns:true,
             initialColumnOrder: {
                 missionary:0,
-                areaName: 24,
-                log: 1,
+                areaName:1,
                 areaEmail: 2,
                 isDuplicate: 3,
-                formTimestamp: 4, //form data
+                formTimestamp: 4,
                 areaID: 5,
-                kiDate: 6, //form data
+                kiDate: 6,
+                np: 7,
+                sa: 8,
+                bd: 9,
+                bc: 10,
+                rca: 11,
+                rc: 12,
+                cki: 13,
+                serviceHrs: 14,
+                "bap-self-ref": 15,
+                "bap-street": 16,
+                "bap-ward-activity-or-event": 17,
+                "bap-ref-recent-convert": 18,
+                "bap-ref-part-member": 19,
+                "bap-ref-other-member": 20,
+                "bap-ref-teaching-pool": 21,
+                "bap-ref-other-non-member": 22,
+                "bap-fb-mission": 23,
+                "bap-fb-personal": 24,
+                "bap-family-history": 25,
+                "bap-taught-prev": 26,
+                "fb-role": 27,
+                "fb-ref-rgv-eng": 28,
+                "fb-ref-rgv-spa": 29,
+                "fb-ref-laredo-eng": 30,
+                "fb-ref-laredo-spa": 31,
+                "fb-ref-ysa": 32,
+                "fb-ref-asl": 33,
+                "fb-ref-service": 34,
+                "fb-ref-corpus": 35,
+                "fb-ref-personal": 36,
+                'feedback-general': 37,
+                'feedback-improvement': 38,
+                'feedback-analysis': 39,
+                'fb-ref-st-eng': 40,
+                'fb-ref-st-spa': 41,
+                'fb-ref-sum': 42,
+                'rrPercent': 43,
+                timeBucket:44,
 
-                np: 7, //form data
-                sa: 8, //form data
-                bd: 9, //form data
-                bc: 10, //form data
-                rca: 11, //form data
-                rc: 12, //form data
-                cki: 13, //form data
-                serviceHrs: 14, //form data
-
-                name1: 15,
-                position1: 16,
-                isTrainer1: 17,
-                name2: 18,
-                position2: 19,
-                isTrainer2: 20,
-                name3: 21,
-                position3: 22,
-                isTrainer3: 23, // hello, update!
             }
         },
         facebookBreakdown: {

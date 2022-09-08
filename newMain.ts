@@ -13,6 +13,13 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+function loadExternalDataForTesting(){
+    loadConfigs()
+    let allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+    // Here's a syntax error to test with:
+    let words = 
+}
+
 function splitByMissionaryTesting(){
     // Step 0: Load KI Data, set things up
     loadConfigs()
