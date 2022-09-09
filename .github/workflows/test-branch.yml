@@ -3,7 +3,7 @@ name: HLA Test Branch
 on:
   workflow_dispatch:
   push:
-    branches: [per-missionary-stats]
+    branches: [arithmeticUpdate]
   release:
     types: [published]
   schedule:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@fixes-and-updates
+    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@e38677c10ee15e2daba58576b77bd4917c222c57
     with:
       # Github repository information
       sha: ${{ github.sha }}
