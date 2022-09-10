@@ -12,7 +12,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@e38677c10ee15e2daba58576b77bd4917c222c57
+    uses: texas-mcallen-mission/deploy-google-app-script-action-typescript/.github/workflows/reusable.yml@d7e9d9130c8fccd375febdb0f4f4f0d18d7f6c62
     with:
       # Github repository information
       sha: ${{ github.sha }}
