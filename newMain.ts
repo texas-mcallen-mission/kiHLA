@@ -19,6 +19,7 @@ function loadExternalDataForTesting(){
     // Here's a syntax error to test with:
     // test round 2
     let words = "finally done testing!"
+
 }
 
 function splitByMissionaryTesting(){
@@ -86,7 +87,9 @@ function aggregateDebugData() {
     debugLogData.insertData(debugData.end);
     
     // Step Last:  Delete old entries.
-    debugFlow.clearRows(lastRow)
+
+    debugFlow.destroyRows(lastRow)
+
     console.log("Completed without crashing!  That's nice.")
     
 }
