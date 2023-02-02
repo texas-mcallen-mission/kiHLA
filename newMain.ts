@@ -13,6 +13,51 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     return allSheetData;
 }
 
+function loadExternalDataForTesting(){
+    loadConfigs()
+    let allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+    // Here's a syntax error to test with:
+    // test round 2
+    let words = "finally done testing!"
+
+}
+
+function splitByMissionaryTesting(){
+    // Step 0: Load KI Data, set things up
+    loadConfigs()
+    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+
+    let kiSheetData = allSheetData.localData
+    let testKiData = allSheetData.perMissionary
+
+    let kiData = new kiDataClass(kiSheetData.getData())
+    
+    let kiDataObj = kiData
+    let outData:kiDataEntry[] = []
+    let targetKeys = ["name1","name2","name3"]
+    let newKeyName = "missionary"
+
+    let keysToKeep = testKiData.getKeys()
+	
+    kiDataObj.breakdownAnalysis(keysToKeep,targetKeys,newKeyName,true)
+	
+
+    // for(let entry of kiDataObj){
+
+    //     for(let key of targetKeys){
+    //         let newEntry = {...entry}
+    //         if(entry[key]!=""){
+    //             newEntry[newKeyName] = newEntry[key]
+    //             outData.push(newEntry)
+    //         }
+    //     }
+    // }
+
+    // send data to display
+
+    testKiData.setData(kiDataObj.end)
+    
+}
 
 function aggregateDebugData() {
     // Step 0: Load everything up.
@@ -42,7 +87,9 @@ function aggregateDebugData() {
     debugLogData.insertData(debugData.end);
     
     // Step Last:  Delete old entries.
+
     debugFlow.destroyRows(lastRow)
+
     console.log("Completed without crashing!  That's nice.")
     
 }
