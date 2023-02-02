@@ -82,6 +82,8 @@ function aggregateDebugData() {
 
     // Step 3: aggregate the data, then add the new keys to the sheetData object.
     debugData.aggregateByKeys(keysToLumpBy, keysToKeep, keysToAggregate, shardKey)
+    debugData.convertToSheetDate("timeStarted", "timeStarted")
+    debugData.convertToSheetDate("hourBucket", "hourBucket")
     debugLogData.addKeysFromArray(debugData.newKeys)
     // Step 4: add the data to the sheet.
     debugLogData.insertData(debugData.end);
