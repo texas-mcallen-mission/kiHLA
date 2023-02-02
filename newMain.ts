@@ -18,7 +18,8 @@ function loadExternalDataForTesting(){
     let allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
     // Here's a syntax error to test with:
     // test round 2
-    let words = 
+    let words = "finally done testing!"
+
 }
 
 function splitByMissionaryTesting(){
