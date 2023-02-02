@@ -86,7 +86,9 @@ function aggregateDebugData() {
     debugLogData.insertData(debugData.end);
     
     // Step Last:  Delete old entries.
-    debugFlow.clearRows(lastRow)
+
+    debugFlow.destroyRows(lastRow)
+
     console.log("Completed without crashing!  That's nice.")
     
 }
