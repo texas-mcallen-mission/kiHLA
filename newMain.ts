@@ -59,6 +59,10 @@ function splitByMissionaryTesting(){
     
 }
 
+
+function testDateConverter() {
+    console.log(convertToSheetDate_(new Date()))
+}
 function aggregateDebugData() {
     // Step 0: Load everything up.
     loadConfigs();
