@@ -1,7 +1,7 @@
 function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     const allSheetData: manySheetDatas = {};
     const keys: string[] = ["Constructed SheetData objects for:"];
-    for (let key in target) {
+    for (const key in target) {
         const entry: sheetDataEntry = target[key];
 
         const rawSheetData = new RawSheetData(entry);
@@ -14,11 +14,11 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
 }
 
 function loadExternalDataForTesting(){
-    loadConfigs()
-    const allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+    loadConfigs();
+    const allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig);
     // Here's a syntax error to test with:
     // test round 2
-    const words = "finally done testing!"
+    //const words = "finally done testing!"
 
 }
 
@@ -114,7 +114,7 @@ function testBattery() {
         updateBapPie: createBapChart,
         cleanDebugLog:aggregateDebugData,
     };
-    for (let entry in tests) {
+    for (const entry in tests) {
         const test = tests[entry];
         console.log("beginning test for", entry);
         test();
