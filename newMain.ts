@@ -201,7 +201,7 @@ function createFBpieChart() {
 
     let data = dataSheet.getData();
     let kicData = new kiDataClass(data);
-    let fbBreakdown = allSheetData.facebookBreakdown;
+    let fbBreakDown = allSheetData.facebookBreakdown;
 
 
     let startDate = new Date("2022-01-20"); // TODO: I forgot what day we actually started calculating these
@@ -211,7 +211,7 @@ function createFBpieChart() {
     let breakdownKeyName = "facebookRefs"
     let refData = kicData.removeDuplicates().calculateCombinedName().breakdownAnalysis(keysToKeep, CONFIG.kiData.fb_referral_keys, breakdownKeyName).end;
 
-    fbBreakdown.setData(refData);
+    fbBreakDown.setData(refData);
 }
 
 function createBapChart() {
