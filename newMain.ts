@@ -1,7 +1,7 @@
 function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
     const allSheetData: manySheetDatas = {};
     const keys: string[] = ["Constructed SheetData objects for:"];
-    for (const key in target) {
+    for (const key in target) { //cannot redefine entry!! if you need to change to let
         const entry: sheetDataEntry = target[key];
 
         const rawSheetData = new RawSheetData(entry);
@@ -33,7 +33,7 @@ function splitByMissionaryTesting(){
     const kiData = new kiDataClass(kiSheetData.getData())
     
     const kiDataObj = kiData
-    const outData:kiDataEntry[] = []
+    //const outData:kiDataEntry[] = [];
     const targetKeys = ["name1","name2","name3"]
     const newKeyName = "missionary"
 
@@ -76,7 +76,7 @@ function aggregateDebugData() {
 
     // Step 2: Calculate hour buckets to group data with.
     debugData.addGranulatedTime("timeStarted", "hourBucket", timeGranularities.hour);
-    const inData = debugData.end;
+    // const inData : kiDataEntry[] = debugData.end;
 
     // This is essentially configuration for what things we want to aggregate with.
     const keysToKeep = ["timeStarted", "commit_sha", "triggerType", "github_branch_ref"];
@@ -114,7 +114,8 @@ function testBattery() {
         updateBapPie: createBapChart,
         cleanDebugLog:aggregateDebugData,
     };
-    for (const entry in tests) {
+
+    for (const entry in tests) { //cannot redefine entry!! if you need to change to let
         const test = tests[entry];
         console.log("beginning test for", entry);
         test();
