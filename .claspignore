@@ -1,1 +1,3 @@
 deploy-data/**
+deploy_data/**
+node_modules/**
