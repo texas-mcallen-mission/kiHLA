@@ -230,6 +230,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 breakdownKey: 6,
                 kiDate: 7,
                 zone: 8,
+                district: 9,
             }
 
         },
@@ -248,6 +249,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 breakdownKey: 6,
                 kiDate: 7,
                 zone: 8,
+                district: 9,
             }
 
         },
