@@ -13,7 +13,7 @@ interface kiDataConfig {
     "new_key_names": manyKeyPairs,
 }
 
-var sheetCoreConfig: sheetCoreConfigInfo = {
+const sheetCoreConfig: sheetCoreConfigInfo = {
     cacheEnabled: true,
     cacheExpiration: 1800,
     cacheKey: "HEY THERE IT ME"
@@ -28,7 +28,7 @@ function loadConfigs() {
     sheetDataConfig = loadSheetConfig();
 }
 
-let INTERNAL_CONFIG: config = {
+const INTERNAL_CONFIG: config = {
     sheetTargets: {
         localData: SpreadsheetApp.getActiveSpreadsheet().getId(),
         serviceRep: "Hey, this should get set by secrets",
@@ -80,13 +80,13 @@ let INTERNAL_CONFIG: config = {
 };
 
 //@ts-expect-error using external libraries is a little weird because it's not a classically-defined package...
-var _ = lodash.load();
+const _ = lodash.load();
 
 function getConfig(): config {
-    let pre_config = _.cloneDeep(INTERNAL_CONFIG);
-    let mod1 = _.cloneDeep(GITHUB_SECRET_DATA);
-    let mod2 = _.cloneDeep(OVERRIDE_SECRET_DATA);
-    let config = _.merge(pre_config, mod1, mod2);
+    const pre_config = _.cloneDeep(INTERNAL_CONFIG);
+    const mod1 = _.cloneDeep(GITHUB_SECRET_DATA);
+    const mod2 = _.cloneDeep(OVERRIDE_SECRET_DATA);
+    const config = _.merge(pre_config, mod1, mod2);
     console.log(config);
     return config;
 }
@@ -105,7 +105,7 @@ function loadSheetConfig(): manySheetDataEntries {
     console.log("SheetConfig ran!");
     CONFIG = _.merge(INTERNAL_CONFIG, _.cloneDeep(GITHUB_SECRET_DATA), OVERRIDE_SECRET_DATA);
 
-    let sheetDataConfig: manySheetDataEntries = {
+    const sheetDataConfig: manySheetDataEntries = {
         perMissionaryAnalysis:{
             tabName:"missionaryAnalysis",
             headerRow:8,
