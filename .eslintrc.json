@@ -1,6 +1,5 @@
 {
     "env": {
-        "googleappsscript/googleappsscript":true,
         "es2021": true
     },
     "extends": [
