@@ -1,11 +1,11 @@
 function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
-    let allSheetData: manySheetDatas = {};
-    let keys: string[] = ["Constructed SheetData objects for:"];
+    const allSheetData: manySheetDatas = {};
+    const keys: string[] = ["Constructed SheetData objects for:"];
     for (let key in target) {
-        let entry: sheetDataEntry = target[key];
+        const entry: sheetDataEntry = target[key];
 
-        let rawSheetData = new RawSheetData(entry);
-        let sheetData = new SheetData(rawSheetData);
+        const rawSheetData = new RawSheetData(entry);
+        const sheetData = new SheetData(rawSheetData);
         keys.push(key);
         allSheetData[key] = sheetData;
     }
@@ -15,29 +15,29 @@ function constructSheetDataV2_(target: manySheetDataEntries): manySheetDatas {
 
 function loadExternalDataForTesting(){
     loadConfigs()
-    let allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+    const allSheetData:manySheetDatas = constructSheetDataV2_(sheetDataConfig)
     // Here's a syntax error to test with:
     // test round 2
-    let words = "finally done testing!"
+    const words = "finally done testing!"
 
 }
 
 function splitByMissionaryTesting(){
     // Step 0: Load KI Data, set things up
     loadConfigs()
-    let allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig)
+    const allSheetData: manySheetDatas = constructSheetDataV2_(sheetDataConfig)
 
-    let kiSheetData = allSheetData.localData
-    let testKiData = allSheetData.perMissionary
+    const kiSheetData = allSheetData.localData
+    const testKiData = allSheetData.perMissionary
 
-    let kiData = new kiDataClass(kiSheetData.getData())
+    const kiData = new kiDataClass(kiSheetData.getData())
     
-    let kiDataObj = kiData
-    let outData:kiDataEntry[] = []
-    let targetKeys = ["name1","name2","name3"]
-    let newKeyName = "missionary"
+    const kiDataObj = kiData
+    const outData:kiDataEntry[] = []
+    const targetKeys = ["name1","name2","name3"]
+    const newKeyName = "missionary"
 
-    let keysToKeep = testKiData.getKeys()
+    const keysToKeep = testKiData.getKeys()
 	
     kiDataObj.breakdownAnalysis(keysToKeep,targetKeys,newKeyName,true)
 	
