@@ -229,6 +229,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 facebookRefs: 5,
                 breakdownKey: 6,
                 kiDate: 7,
+                zone: 8,
             }
 
         },
@@ -246,6 +247,7 @@ function loadSheetConfig(): manySheetDataEntries {
                 baptisms: 5,
                 breakdownKey: 6,
                 kiDate: 7,
+                zone: 8,
             }
 
         },
