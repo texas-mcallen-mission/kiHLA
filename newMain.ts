@@ -134,7 +134,7 @@ function getWeekOfMonth_(inDate:string|Date):number {
     var date = dateClass.getDate();
     var day = dateClass.getDay();
 
-    var weekOfMonth = Math.ceil((date - 1 - day) / 7);
+    var weekOfMonth = Math.ceil((date - 1 - day+0.5) / 7);
 
     return weekOfMonth
 }
@@ -170,7 +170,8 @@ function updateLocalDataStore() {
     let leaderRoles = Object.keys(positions)
     for (let entry in dataForExtraStuff) {
         let leaderRole = ""
-        for (let key in positionKeys) {
+        // My brain gets in and of about as confused as left and right sometimes it seems.
+        for (let key of positionKeys) {
             if (leaderRoles.includes(entry[key])) {
                 leaderRole=positions[entry[key]]
             }
