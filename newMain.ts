@@ -154,8 +154,9 @@ function updateLocalDataStore() {
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
     kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
 
-
+    let dataForExtraStuff = kicData.data
     // calculating area's leadership position, because it's a pain in Looker Studio
+    console.log("adding calculated area position")
     let positionKeys = ["position1", "position2", "position3"]
     let positions = {
         "AP":"AP",
@@ -167,7 +168,7 @@ function updateLocalDataStore() {
         "ZL2":"ZL",
     }
     let leaderRoles = Object.keys(positions)
-    for (let entry in kicData.data) {
+    for (let entry in dataForExtraStuff) {
         let leaderRole = ""
         for (let key in positionKeys) {
             if (leaderRoles.includes(entry[key])) {
@@ -182,11 +183,12 @@ function updateLocalDataStore() {
     }
 
     // Calculating Week of Month
-    
-    for (let entry in kicData.data) {
+    console.log("adding calculated week of month")
+    for (let entry in dataForExtraStuff) {
         let weekOfMonth = getWeekOfMonth_(entry["kiDate"])
         entry["weekOfMonth"] = weekOfMonth
     }
+    kicData.data = dataForExtraStuff
 
 
     allSheetData.localData.setData(kicData.end);
