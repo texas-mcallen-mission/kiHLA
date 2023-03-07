@@ -124,6 +124,21 @@ function testBattery() {
     console.log("tests finished, took ", endTime.getTime() - startTime.getTime(), " milliseconds");
 }
 
+/**
+ * @description given a date or string, return the week of month a date falls in.
+ * @param {(string|Date)} inDate
+ * @return {*}  {number}
+ */
+function getWeekOfMonth_(inDate:string|Date):number {
+    var dateClass = new Date(inDate);
+    var date = dateClass.getDate();
+    var day = dateClass.getDay();
+
+    var weekOfMonth = Math.ceil((date - 1 - day) / 7);
+
+    return weekOfMonth
+}
+
 function updateLocalDataStore() {
     loadConfigs()
     const allSheetData = constructSheetDataV2_(sheetDataConfig);
@@ -133,13 +148,52 @@ function updateLocalDataStore() {
 
     allSheetData.localData.addKeys(allSheetData.remoteData);
     const kicData = new kiDataClass(data);
+    // might as well run the filter first and save ourselves a few cycles
+    kicData.removeMatchingByKey("isDuplicate", [true])
+
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
     kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
 
 
-    allSheetData.localData.setData(kicData.removeDuplicates().end);
+    // calculating area's leadership position, because it's a pain in Looker Studio
+    let positionKeys = ["position1", "position2", "position3"]
+    let positions = {
+        "AP":"AP",
+        "DL":"DL",
+        "DT":"DL",
+        "STL1":"STL",
+        "STL2":"STL",
+        "ZL1":"ZL",
+        "ZL2":"ZL",
+    }
+    let leaderRoles = Object.keys(positions)
+    for (let entry in kicData.data) {
+        let leaderRole = ""
+        for (let key in positionKeys) {
+            if (leaderRoles.includes(entry[key])) {
+                leaderRole=positions[entry[key]]
+            }
+        }
+        // default option
+        if (leaderRole == "") {
+            leaderRole = "Normal"
+        }
+        entry["leaderRole"] = leaderRole
+    }
+
+    // Calculating Week of Month
+    
+    for (let entry in kicData.data) {
+        let weekOfMonth = getWeekOfMonth_(entry["kiDate"])
+        entry["weekOfMonth"] = weekOfMonth
+    }
+
+
+    allSheetData.localData.setData(kicData.end);
 
 }
+
+
 
 
 function testSyncDataFlowCols() {
