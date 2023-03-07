@@ -130,11 +130,11 @@ function testBattery() {
  * @return {*}  {number}
  */
 function getWeekOfMonth_(inDate:string|Date):number {
-    var dateClass = new Date(inDate);
-    var date = dateClass.getDate();
-    var day = dateClass.getDay();
+    const dateClass = new Date(inDate);
+    const date = dateClass.getDate();
+    const day = dateClass.getDay();
 
-    var weekOfMonth = Math.ceil((date - 1 - day+0.5) / 7);
+    const weekOfMonth = Math.ceil((date - 1 - day+0.5) / 7);
 
     return weekOfMonth
 }
@@ -154,11 +154,11 @@ function updateLocalDataStore() {
     kicData.calculatePercentage("rca", "rc", CONFIG.kiData.new_key_names.retentionRate);
     kicData.createSumOfKeys(CONFIG.kiData.fb_referral_keys, CONFIG.kiData.new_key_names.fb_referral_sum);
 
-    let dataForExtraStuff = kicData.data
+    const dataForExtraStuff = kicData.data
     // calculating area's leadership position, because it's a pain in Looker Studio
     console.log("adding calculated area position")
-    let positionKeys = ["position1", "position2", "position3"]
-    let positions = {
+    const positionKeys = ["position1", "position2", "position3"]
+    const positions = {
         "AP":"AP",
         "DL":"DL",
         "DT":"DL",
@@ -167,11 +167,11 @@ function updateLocalDataStore() {
         "ZL1":"ZL",
         "ZL2":"ZL",
     }
-    let leaderRoles = Object.keys(positions)
-    for (let entry in dataForExtraStuff) {
+    const leaderRoles = Object.keys(positions)
+    for (const entry in dataForExtraStuff) {
         let leaderRole = ""
         // My brain gets in and of about as confused as left and right sometimes it seems.
-        for (let key of positionKeys) {
+        for (const key of positionKeys) {
             if (leaderRoles.includes(entry[key])) {
                 leaderRole=positions[entry[key]]
             }
@@ -185,8 +185,8 @@ function updateLocalDataStore() {
 
     // Calculating Week of Month
     console.log("adding calculated week of month")
-    for (let entry in dataForExtraStuff) {
-        let weekOfMonth = getWeekOfMonth_(entry["kiDate"])
+    for (const entry in dataForExtraStuff) {
+        const weekOfMonth = getWeekOfMonth_(entry["kiDate"])
         entry["weekOfMonth"] = weekOfMonth
     }
     kicData.data = dataForExtraStuff
