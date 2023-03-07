@@ -5,7 +5,7 @@ on:
   push:
 
 
-    branches: [addingZoneToBap]
+    branches: [21-add-week-of-month-calculated-field]
 
   release:
     types: [published]

@@ -390,6 +390,9 @@ function loadSheetConfig(): manySheetDataEntries {
                 'fb-ref-st-spa': 74,
                 'fb-ref-sum': 75,
                 'rrPercent': 76,
+                'leaderRole': 77,
+                'weekOfMonth': 78,
+                
             },
         },
         localForms: {
