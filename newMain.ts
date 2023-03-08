@@ -168,7 +168,7 @@ function updateLocalDataStore() {
         "ZL2":"ZL",
     }
     const leaderRoles = Object.keys(positions)
-    for (const entry in dataForExtraStuff) {
+    for (const entry of dataForExtraStuff) {
         let leaderRole = ""
         // My brain gets in and of about as confused as left and right sometimes it seems.
         for (const key of positionKeys) {
@@ -185,7 +185,7 @@ function updateLocalDataStore() {
 
     // Calculating Week of Month
     console.log("adding calculated week of month")
-    for (const entry in dataForExtraStuff) {
+    for (const entry of dataForExtraStuff) {
         const weekOfMonth = getWeekOfMonth_(entry["kiDate"])
         entry["weekOfMonth"] = weekOfMonth
     }
